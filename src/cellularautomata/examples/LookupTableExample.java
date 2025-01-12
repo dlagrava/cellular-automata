@@ -1,15 +1,17 @@
-/*
- * No licence
- */
-
 package cellularautomata.examples;
 
-import cellularautomata.core.*;
+import cellularautomata.core.BoundaryFactory;
+import cellularautomata.core.ICellularAutomata;
+import cellularautomata.core.LookupTableCellularAutomata;
+import cellularautomata.core.LookupTableFactory;
+import cellularautomata.core.NeighborhoodFactory;
+import cellularautomata.core.Setup;
 import cellularautomata.display.ColorMap;
 import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.ImageDisplayer;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 
 
 /**

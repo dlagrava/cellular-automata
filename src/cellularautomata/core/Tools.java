@@ -1,14 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cellularautomata.core;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -118,4 +114,25 @@ public class Tools {
             }
         }
     }
+
+    /**
+     * Return the min value of the 2D Array
+     *
+     * @param values a 2D Array
+     * @return the min value of the 2D Array or Integer.MAX_VALUE
+     */
+    public static int getMin(int[][] values) {
+        return Arrays.stream(values)
+                .flatMapToInt(Arrays::stream)
+                .min()
+                .orElse(Integer.MAX_VALUE);
+    }
+
+    public static int getMax(int[][] values) {
+        return Arrays.stream(values)
+                .flatMapToInt(Arrays::stream)
+                .max()
+                .orElse(Integer.MIN_VALUE);
+    }
+
 }

@@ -1,6 +1,3 @@
-/*
- * No licence
- */
 package cellularautomata.display;
 
 import javax.swing.*;
@@ -41,29 +38,5 @@ public class ImageDisplayer extends JPanel implements IExporter {
     @Override
     protected void paintComponent(Graphics g) {
         g.drawImage(image, 0, 0, this);
-    }
-
-    private int getMin(int[][] values) {
-        int min = Integer.MAX_VALUE;
-        for (int iX = 0; iX < values.length; iX++) {
-            for (int iY = 0; iY < values[iX].length; iY++) {
-                if (values[iX][iY] < min) {
-                    min = values[iX][iY];
-                }
-            }
-        }
-        return min;
-    }
-
-    private int getMax(int[][] values) {
-        int max = Integer.MIN_VALUE;
-        for (int iX = 0; iX < values.length; iX++) {
-            for (int iY = 0; iY < values[iX].length; iY++) {
-                if (values[iX][iY] > max) {
-                    max = values[iX][iY];
-                }
-            }
-        }
-        return max;
     }
 }

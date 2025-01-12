@@ -4,7 +4,8 @@
  */
 package hpp;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

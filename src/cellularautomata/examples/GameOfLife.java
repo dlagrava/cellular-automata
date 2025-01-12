@@ -1,7 +1,3 @@
-/*
- * No licence
- */
-
 package cellularautomata.examples;
 
 import cellularautomata.core.*;
@@ -69,8 +65,5 @@ public class GameOfLife extends IntegerCellularAutomata2D {
         }
 
         System.exit(0);
-
     }
-
-
 }

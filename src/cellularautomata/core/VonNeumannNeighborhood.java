@@ -1,14 +1,10 @@
-/*
- * No licence
- */
-
 package cellularautomata.core;
 
 /**
- * This class implements an standard Von Neumman neighborhood encoded as
- * 2
+ * This class implements a standard Von Neumman neighborhood encoded as
+ *  2
  * 301
- * 4
+ *  4
  *
  * @author Daniel Lagrava
  */
@@ -32,7 +28,6 @@ public class VonNeumannNeighborhood implements INeighborhood {
     }
 
     private void computeNeighbors(int x, int y) {
-
         neighbors[0][0] = x;
         neighbors[0][1] = y;
         neighbors[1][0] = x + 1;

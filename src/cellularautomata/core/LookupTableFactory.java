@@ -14,7 +14,7 @@ public class LookupTableFactory {
     ;
 
     /**
-     * Create the parity rule for a given neighbor number.
+     * Create the parity rule lookup table for a given neighbor number.
      *
      * @param neighborNumber
      * @return

@@ -47,7 +47,7 @@ public interface ICellularAutomata {
     int getSizeY();
 
     /**
-     * @param writer
+     * @param exporter The exporter to use to show the CA values
      */
     void exportValues(IExporter exporter);
 }

@@ -1,10 +1,7 @@
-/*
- * No licence
- */
-
 package cellularautomata.display;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 
 /**
  * @author Daniel Lagrava
@@ -14,24 +11,23 @@ public class GrayLevelColorMap extends ColorMap {
 
     public GrayLevelColorMap(int minValue, int maxValue) {
         super(minValue, maxValue);
+        if (minValue > maxValue) {
+            throw new IllegalArgumentException("minValue is greater than maxValue");
+        }
     }
 
 
     @Override
     public int convertValue(int value) {
-        if (maxValue != minValue) {
-            int greyValue = levels / (maxValue - minValue) * value;
-            return greyValue + (greyValue << 8) + (greyValue << 16);
-        }
-        System.err.println("Merde");
-        return 0;
+        int greyValue = levels / (maxValue - minValue) * value;
+        return greyValue + (greyValue << 8) + (greyValue << 16);
     }
 
     public static void main(String[] args) {
         int sizeX = 256;
         int sizeY = 256;
 
-        ImageDisplayer panel = new ImageDisplayer(sizeX, sizeY, new GrayLevelColorMap(0, sizeY - 1));
+        ImageDisplayer panel = new ImageDisplayer(sizeX, sizeY, new GrayLevelColorMap(0, 255));
 
 
         // To show the CA //////////////////

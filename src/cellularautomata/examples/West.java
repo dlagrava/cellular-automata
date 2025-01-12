@@ -1,10 +1,11 @@
-/*
- * No licence
- */
-
 package cellularautomata.examples;
 
-import cellularautomata.core.*;
+import cellularautomata.core.BoundaryFactory;
+import cellularautomata.core.ICellularAutomata;
+import cellularautomata.core.IntegerCellularAutomata2D;
+import cellularautomata.core.NeighborhoodFactory;
+import cellularautomata.core.Setup;
+import cellularautomata.core.Tools;
 import cellularautomata.display.ColorMap;
 import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.ImageWriter;

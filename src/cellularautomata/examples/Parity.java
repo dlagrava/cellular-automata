@@ -1,6 +1,3 @@
-/*
- * No licence
- */
 package cellularautomata.examples;
 
 import cellularautomata.core.*;

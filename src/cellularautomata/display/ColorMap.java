@@ -1,7 +1,3 @@
-/*
- * No licence
- */
-
 package cellularautomata.display;
 
 /**

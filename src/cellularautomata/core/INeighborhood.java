@@ -10,19 +10,21 @@ package cellularautomata.core;
 public interface INeighborhood {
 
     /**
-     * @param x
-     * @param y
+     * Given a neighborhood implementation, return the neighbors of location (i,j)
+     *
+     * @param i
+     * @param j
      * @return
      */
-    int[][] getNeighborIndices(int x, int y);
+    int[][] getNeighborIndices(int i, int j);
 
     /**
-     * @return
+     * @return number of neighbors in the neighborhood. Useful to iterate through them
      */
     int getTotalNeighborNumber();
 
     /**
-     * @return
+     * @return radius of the neighborhood. Useful for boundary conditions
      */
     int getRadius();
 

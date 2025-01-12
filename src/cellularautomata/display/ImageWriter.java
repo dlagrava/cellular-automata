@@ -1,7 +1,6 @@
-/*
- * No licence
- */
 package cellularautomata.display;
+
+import cellularautomata.core.Tools;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -19,10 +18,10 @@ import java.util.logging.Logger;
  */
 public class ImageWriter implements IExporter {
 
-    private int width;
-    private int height;
-    private BufferedImage image;
-    private ColorMap colorMap;
+    private final int width;
+    private final int height;
+    private final BufferedImage image;
+    private final ColorMap colorMap;
     private String fileName;
     private boolean isDynamic = false; // recompute the color map if needed
 
@@ -41,8 +40,8 @@ public class ImageWriter implements IExporter {
             // if dynamic colormap, recompute the min and max
             if (isDynamic) {
                 // Retrieve the min and max values to update the colorMap
-                int min = getMin(values);
-                int max = getMax(values);
+                int min = Tools.getMin(values);
+                int max = Tools.getMax(values);
                 // set new colorMap min and max
                 colorMap.setMinValue(min);
                 colorMap.setMaxValue(max);
@@ -77,27 +76,8 @@ public class ImageWriter implements IExporter {
         this.fileName = fileName;
     }
 
-    private int getMin(int[][] values) {
-        int min = Integer.MAX_VALUE;
-        for (int iX = 0; iX < values.length; iX++) {
-            for (int iY = 0; iY < values[iX].length; iY++) {
-                if (values[iX][iY] < min) {
-                    min = values[iX][iY];
-                }
-            }
-        }
-        return min;
+    public void setDynamic(boolean dynamic) {
+        isDynamic = dynamic;
     }
 
-    private int getMax(int[][] values) {
-        int max = Integer.MIN_VALUE;
-        for (int iX = 0; iX < values.length; iX++) {
-            for (int iY = 0; iY < values[iX].length; iY++) {
-                if (values[iX][iY] > max) {
-                    max = values[iX][iY];
-                }
-            }
-        }
-        return max;
-    }
 }

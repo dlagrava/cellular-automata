@@ -1,7 +1,3 @@
-/*
- *
- */
-
 package cellularautomata.core;
 
 /**
@@ -13,13 +9,10 @@ package cellularautomata.core;
 public class LookupTable {
 
     private final int[] table;
-    private final int length;
-
 
     public LookupTable(int[] table_) {
-        length = table_.length;
-        table = new int[length];
-        System.arraycopy(table_, 0, table, 0, length);
+        table = new int[table_.length];
+        System.arraycopy(table_, 0, table, 0, table_.length);
     }
 
     /**
@@ -40,7 +33,7 @@ public class LookupTable {
      */
     public int hammingDistance(LookupTable lt) {
         int distance = 0;
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < table.length; i++) {
             if (table[i] != lt.getValue(i)) distance++;
         }
         return distance;
@@ -49,19 +42,19 @@ public class LookupTable {
     /**
      * Returns the length of the lookup table.
      *
-     * @return
+     * @return length of the lookup table
      */
     public int getLength() {
-        return length;
+        return table.length;
     }
 
     /**
      * Modify the internal integer lookup table with a new one.
      *
-     * @param table
+     * @param table new table to affect to the current lookup table
      */
     public void setTable(int[] table) {
-        System.arraycopy(table, 0, this.table, 0, length);
+        System.arraycopy(table, 0, this.table, 0, table.length);
     }
 
     /**
@@ -72,7 +65,7 @@ public class LookupTable {
      */
     public int toInteger() {
         int result = 0;
-        for (int i = 0; i < length; ++i) {
+        for (int i = 0; i < table.length; ++i) {
             result += table[i] * (1 << i);
         }
         return result;

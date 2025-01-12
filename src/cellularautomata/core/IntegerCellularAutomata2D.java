@@ -5,6 +5,7 @@
 package cellularautomata.core;
 
 import cellularautomata.display.IExporter;
+import jdk.jshell.spi.ExecutionControl;
 
 /**
  * A simple implementation of an integer valued CA.

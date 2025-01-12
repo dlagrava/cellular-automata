@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package hpp;
 
 import cellularautomata.core.IntegerCellularAutomata2D;
@@ -45,7 +40,7 @@ public class RunableIterations extends Thread {
                     try {
                         wait();
                     } catch (InterruptedException ex) {
-                        System.err.println("Thread interrupted !");
+                        System.err.println("Thread interrupted!");
                     }
                 }
             }
@@ -53,7 +48,7 @@ public class RunableIterations extends Thread {
         try {
             join();
         } catch (InterruptedException ex) {
-            System.err.println("Thread interrupted !");
+            System.err.println("Thread interrupted!");
         }
     }
 

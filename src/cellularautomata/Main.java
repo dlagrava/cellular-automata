@@ -1,6 +1,3 @@
-/*
- *  Example class
- */
 package cellularautomata;
 
 import cellularautomata.core.*;

@@ -1,15 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cellularautomata.examples;
 
-import cellularautomata.core.*;
+import cellularautomata.core.BoundaryFactory;
+import cellularautomata.core.IntegerCellularAutomata2D;
+import cellularautomata.core.NeighborhoodFactory;
+import cellularautomata.core.Setup;
+import cellularautomata.core.Tools;
 import cellularautomata.display.ColorMap;
 import cellularautomata.display.HotColorMap;
 import cellularautomata.display.ImageDisplayer;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import java.util.Random;
 
 /**

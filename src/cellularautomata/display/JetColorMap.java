@@ -54,8 +54,8 @@ public class JetColorMap extends ColorMap {
      * @param args
      */
     public static void main(String[] args) {
-        int sizeX = 256;
-        int sizeY = 256;
+        int sizeX = 500;
+        int sizeY = 500;
 
         ImageDisplayer panel = new ImageDisplayer(sizeX, sizeY, new JetColorMap(0, sizeY - 1));
 

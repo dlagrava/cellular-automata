@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package hpp;
 
 import cellularautomata.core.IntegerCellularAutomata2D;
@@ -10,8 +6,13 @@ import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.ImageDisplayer;
 import cellularautomata.examples.HPP;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
