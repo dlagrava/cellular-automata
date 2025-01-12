@@ -6,11 +6,13 @@ package cellularautomata.core;
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Given a rule in the format specified in TheFormat, read it and prepare a setup
  * for a CA.
+ *
  * @author lagravas
  */
 public class RuleDecoder {
@@ -21,18 +23,18 @@ public class RuleDecoder {
     public static final String comment = "^#.*";
 
     // properties will contain (property,value) pairs
-    private HashMap<String,String> properties;
+    private HashMap<String, String> properties;
     // vars will contain (variable,values) pairs
-    private HashMap<Character,int[]> vars;
+    private HashMap<Character, int[]> vars;
     // rules will contain an integer table which represents the rule
     private ArrayList<int[]> rules;
 
     private Vector<String> lines;
 
-    public RuleDecoder(String fileName){
+    public RuleDecoder(String fileName) {
         lines = new Vector<String>();
         properties = new HashMap<String, String>();
-        vars = new HashMap<Character,int[]>();
+        vars = new HashMap<Character, int[]>();
         rules = new ArrayList<int[]>();
 
         readFile(fileName);
@@ -49,16 +51,15 @@ public class RuleDecoder {
             while ((line = br.readLine()) != null) {
                 lines.add(line);
             }
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
         }
     }
 
     public void process() {
-        for (String line : lines){
+        for (String line : lines) {
             // process a declaration type of string
-            if (line.matches(property)) processProperty(property); 
+            if (line.matches(property)) processProperty(property);
             // ignore the comments
             if (line.matches(comment)) continue;
             // save the variable values
@@ -68,50 +69,49 @@ public class RuleDecoder {
         }
     }
 
-    private void processProperty(String declaration){
+    private void processProperty(String declaration) {
         List<String> l = Arrays.asList(declaration.split(":"));
-        properties.put(l.get(0),l.get(1));
+        properties.put(l.get(0), l.get(1));
     }
 
-    private void processVariable(String variable){
+    private void processVariable(String variable) {
         Pattern p = Pattern.compile(variables);
         Matcher m = p.matcher(variable);
         // execute the matching
         boolean matchFound = m.find();
         if (matchFound) { // Get all groups for this match
-           String varName = m.group(1);
-           String[] values = m.group(2).split("\\,");
-           int[] integerValues = new int[values.length];
-           for (int i = 0; i < values.length; ++i){
-               integerValues[i] = Integer.parseInt(values[i]);
-           }
-           // putting the results in the var HashMap
-           vars.put(new Character(varName.charAt(0)), integerValues);
-        }
-        else{
+            String varName = m.group(1);
+            String[] values = m.group(2).split("\\,");
+            int[] integerValues = new int[values.length];
+            for (int i = 0; i < values.length; ++i) {
+                integerValues[i] = Integer.parseInt(values[i]);
+            }
+            // putting the results in the var HashMap
+            vars.put(new Character(varName.charAt(0)), integerValues);
+        } else {
             System.out.println("Merdeeee");
         }
     }
 
-    private void processRule(String ruleStr){
+    private void processRule(String ruleStr) {
         Pattern p = Pattern.compile(ruleString);
         Matcher m = p.matcher(ruleStr);
         // execute the matching
         boolean matchFound = m.find();
         // erase the eventual comments and get the numbers
         String effectiveRule = m.group(1);
-        if (matchFound){
+        if (matchFound) {
             // test if the rule has or not ,
-            if (effectiveRule.indexOf(",") > 0){
+            if (effectiveRule.indexOf(",") > 0) {
                 String[] values = m.group(1).split(",");
                 processComaSeparatedRule(values);
             }
             // if it has no , then every digit is an entry
             else {
                 // test if there are no variables
-                if (containsOnlyNumbers(effectiveRule)){
+                if (containsOnlyNumbers(effectiveRule)) {
                     int[] rule = new int[effectiveRule.length()];
-                    for (int i = 0; i < effectiveRule.length(); ++i){
+                    for (int i = 0; i < effectiveRule.length(); ++i) {
                         rule[i] = (int) (effectiveRule.charAt(i) - '0');
                     }
                     rules.add(rule);
@@ -122,18 +122,17 @@ public class RuleDecoder {
                     processSimpleRuleWithVariables(decomposedRule);
                 }
             }
-            
-        
+
+
         }
     }
 
     /**
-     * 
      * @param s
      * @return
      */
-    private boolean containsOnlyNumbers(String s){
-        for (int i = 0; i < s.length(); ++i){
+    private boolean containsOnlyNumbers(String s) {
+        for (int i = 0; i < s.length(); ++i) {
             if (!Character.isDigit(s.charAt(i))) return false;
         }
         return true;
@@ -141,21 +140,21 @@ public class RuleDecoder {
 
     /**
      * Processing and inserting in the rules list a "," separated rule.
+     *
      * @param rule
      */
-    private void processComaSeparatedRule(String[] rule){
-        
+    private void processComaSeparatedRule(String[] rule) {
+
     }
 
     /**
-     * 
      * @param rule
      */
-    private void processSimpleRuleWithVariables(char[] rule){
+    private void processSimpleRuleWithVariables(char[] rule) {
         int countVariableNumber = 0;
         int rulesNumber = 1;
 
-        for (char c : rule){
+        for (char c : rule) {
             if (Character.isLetter(c)) {
                 countVariableNumber++;
                 int[] values = vars.get(new Character(c));
@@ -163,17 +162,17 @@ public class RuleDecoder {
             }
         }
         // for each variable value
-        for (int i = 0; i < rulesNumber; ++i){
+        for (int i = 0; i < rulesNumber; ++i) {
             int[] newRule = new int[rule.length];
-            for (int var = 0; var < rule.length; ++var){
-                
+            for (int var = 0; var < rule.length; ++var) {
+
             }
 
         }
     }
 
     public static void main(String[] args) throws IOException {
-        
+
         RuleDecoder rd = new RuleDecoder("example.table");
         rd.process();
     }

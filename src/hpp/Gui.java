@@ -5,25 +5,20 @@
 package hpp;
 
 import cellularautomata.core.IntegerCellularAutomata2D;
-import static cellularautomata.core.BoundaryFactory.BoundaryType.*;
-import static cellularautomata.core.NeighborhoodFactory.NeighborhoodType.*;
-
 import cellularautomata.core.Setup;
-import cellularautomata.display.*;
+import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.ImageDisplayer;
-import cellularautomata.examples.*;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import cellularautomata.examples.HPP;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+
+import static cellularautomata.core.BoundaryFactory.BoundaryType.PERIODIC;
+import static cellularautomata.core.NeighborhoodFactory.NeighborhoodType.VONNEUMANN;
 
 /**
- *
  * @author lagravas
  */
 public class Gui extends JFrame {
@@ -56,14 +51,13 @@ public class Gui extends JFrame {
 
         JLabel empty = new JLabel(" ");
         JTextField textIter = new JTextField("100");
-        ActionListener listener = new AutomataListener( sim, reverse, addParticle, textIter, iteration );
+        ActionListener listener = new AutomataListener(sim, reverse, addParticle, textIter, iteration);
 
-        sim.addActionListener( listener );
-        
-        
-        
-        reverse.addActionListener( listener );        
-        addParticle.addActionListener( listener );
+        sim.addActionListener(listener);
+
+
+        reverse.addActionListener(listener);
+        addParticle.addActionListener(listener);
 
         buttonPanel.add(sim);
         buttonPanel.add(textIter);
@@ -124,6 +118,8 @@ public class Gui extends JFrame {
                 iteration.addParticle();
             }
         }
-    };
+    }
+
+    ;
 }
 

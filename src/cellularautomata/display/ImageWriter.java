@@ -3,16 +3,18 @@
  */
 package cellularautomata.display;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 
 /**
  * This class takes a ColorMap object and writes an image that represents the state
- * of the cellular automata in that moment. 
+ * of the cellular automata at that moment.
+ *
  * @author Daniel Lagrava
  */
 public class ImageWriter implements IExporter {
@@ -35,7 +37,7 @@ public class ImageWriter implements IExporter {
         try {
             String outputFile = fileName;
             FileOutputStream stream = new FileOutputStream(outputFile);
-            
+
             // if dynamic colormap, recompute the min and max
             if (isDynamic) {
                 // Retrieve the min and max values to update the colorMap
@@ -62,9 +64,7 @@ public class ImageWriter implements IExporter {
         String number = Integer.toString(x);
         char[] res = new char[length];
 
-        for (int i = 0; i < length; i++) {
-            res[i] = '0';
-        }
+        Arrays.fill(res, '0');
 
         String zeros = new String(res);
         int neededZeros = length - number.length();

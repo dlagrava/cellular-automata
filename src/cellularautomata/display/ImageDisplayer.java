@@ -3,12 +3,13 @@
  */
 package cellularautomata.display;
 
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import javax.swing.JPanel;
 
 /**
  * A Component to display the values of a cellular automata in a GUI.
+ *
  * @author Daniel Lagrava
  */
 public class ImageDisplayer extends JPanel implements IExporter {
@@ -17,7 +18,7 @@ public class ImageDisplayer extends JPanel implements IExporter {
     private int height;
     private BufferedImage image;
     private ColorMap colorMap;
-    
+
 
     public ImageDisplayer(int width, int height, ColorMap color) {
         this.width = width;
@@ -27,7 +28,7 @@ public class ImageDisplayer extends JPanel implements IExporter {
     }
 
     public void writeIntegerValues(int[][] values) {
-     
+
         // writing the data in the image
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {

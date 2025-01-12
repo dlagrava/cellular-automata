@@ -3,28 +3,21 @@
  */
 package cellularautomata.examples;
 
-import cellularautomata.display.*;
 import cellularautomata.core.*;
+import cellularautomata.display.ColorMap;
+import cellularautomata.display.HotColorMap;
+import cellularautomata.display.ImageDisplayer;
+
 import javax.swing.*;
 
 /**
- *
  * @author Daniel Lagrava
  */
 public class Parity extends IntegerCellularAutomata2D {
 
     public Parity(int sizeX, int sizeY, Setup setup) {
         super(sizeX, sizeY, setup);
-        Tools.initializeFilledSquare(cells, 1, sizeX/3, sizeY/3, sizeX/3);
-    }
-
-    @Override
-    public int applyRule(int x, int y, int[] values) {
-        int res = 0;
-        for (int iK = 1; iK < values.length; iK++) {
-            res += values[iK];
-        }
-        return res % 2;
+        Tools.initializeFilledSquare(cells, 1, sizeX / 3, sizeY / 3, sizeX / 3);
     }
 
     public static void main(String[] args) {
@@ -60,5 +53,14 @@ public class Parity extends IntegerCellularAutomata2D {
 
         System.exit(0);
 
+    }
+
+    @Override
+    public int applyRule(int x, int y, int[] values) {
+        int res = 0;
+        for (int iK = 1; iK < values.length; iK++) {
+            res += values[iK];
+        }
+        return res % 2;
     }
 }

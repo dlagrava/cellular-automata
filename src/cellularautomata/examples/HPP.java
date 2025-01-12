@@ -5,14 +5,17 @@
 package cellularautomata.examples;
 
 import cellularautomata.core.*;
-import cellularautomata.display.*;
+import cellularautomata.display.ColorMap;
+import cellularautomata.display.HotColorMap;
+import cellularautomata.display.ImageDisplayer;
+
+import javax.swing.*;
 import java.util.Random;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 
 /**
  * Implementation of HPP gaz automata. Each site has 4 values that reflect the
  * for possible lattice directions.
+ *
  * @author lagravas
  */
 public class HPP extends IntegerCellularAutomata2D {
@@ -25,7 +28,8 @@ public class HPP extends IntegerCellularAutomata2D {
 
     /**
      * Get the value on a given direction
-     * @param value 
+     *
+     * @param value
      * @param direction is either NORTH, SOUTH, EAST, WEST
      * @return
      */
@@ -38,12 +42,13 @@ public class HPP extends IntegerCellularAutomata2D {
         //setValue(sizeX/3, sizeY/2, NORTH + SOUTH + EAST + WEST);
         int center[] = {sizeX / 2, sizeY / 2};
         Tools.initializeDisk(cells, NORTH + SOUTH + EAST + WEST, center, sizeX / 3);
-        Tools.initializeEmptySquare(cells, SOLID, 2, 2, sizeX-3);
+        Tools.initializeEmptySquare(cells, SOLID, 2, 2, sizeX - 3);
 
     }
 
     /**
      * Implement the collision change of directions in the HPP model.
+     *
      * @param x
      * @param y
      * @param values
@@ -96,31 +101,31 @@ public class HPP extends IntegerCellularAutomata2D {
         }
     }
 
-/*
-    @Override
-    public void exportValues(IExporter writer){
-        // table that contains the values to be exported
-        int[][] values = new int [sizeX][sizeY];
-        // we only need the internal cells not the boundary-added cells
-        int width = setup.getBoundaryWidth();
-        // loop to retrieve the values
-        for (int iX = width; iX < realSizeX-width; iX++){
-            for (int iY = width; iY < realSizeY-width; iY++){
-                values[iX-width][iY-width] = cells[iX][iY] > 0 ? NORTH + SOUTH + EAST + WEST : 0;
+    /*
+        @Override
+        public void exportValues(IExporter writer){
+            // table that contains the values to be exported
+            int[][] values = new int [sizeX][sizeY];
+            // we only need the internal cells not the boundary-added cells
+            int width = setup.getBoundaryWidth();
+            // loop to retrieve the values
+            for (int iX = width; iX < realSizeX-width; iX++){
+                for (int iY = width; iY < realSizeY-width; iY++){
+                    values[iX-width][iY-width] = cells[iX][iY] > 0 ? NORTH + SOUTH + EAST + WEST : 0;
+                }
             }
+            // send the values to the writer
+            writer.writeIntegerValues(values);
         }
-        // send the values to the writer
-        writer.writeIntegerValues(values);
-    }
-*/
-    public void reverse(){
+    */
+    public void reverse() {
         for (int iX = xStart; iX < xEnd; ++iX) {
             for (int iY = yStart; iY < yEnd; ++iY) {
                 int[] neighborValues = temporaryArrays[iX][iY];
-                    int N = getDirectionValue(neighborValues[0], NORTH);
-                    int S = getDirectionValue(neighborValues[0], SOUTH);
-                    int E = getDirectionValue(neighborValues[0], EAST);
-                    int W = getDirectionValue(neighborValues[0], WEST);
+                int N = getDirectionValue(neighborValues[0], NORTH);
+                int S = getDirectionValue(neighborValues[0], SOUTH);
+                int E = getDirectionValue(neighborValues[0], EAST);
+                int W = getDirectionValue(neighborValues[0], WEST);
                 if (getDirectionValue(getValue(iX, iY), SOLID) == 0) {
                     int newValue = N * SOUTH + S * NORTH + E * WEST + W * EAST;
                     setValue(iX, iY, newValue);
@@ -176,7 +181,7 @@ public class HPP extends IntegerCellularAutomata2D {
             frame.repaint();
         }
 
-        ((HPP)ca).reverse();
+        ((HPP) ca).reverse();
         System.out.println("Reversing NOW!!!!");
 
         for (int iT = 0; iT < iterations; iT++) {
@@ -186,17 +191,18 @@ public class HPP extends IntegerCellularAutomata2D {
             frame.repaint();
         }
 
-        while(true){}
+        while (true) {
+        }
 
 //        System.exit(0);
 
     }
 
-    public void addParticle(){
+    public void addParticle() {
         Random rng = new Random();
         int xCoordinate = rng.nextInt(xEnd);
         int yCoordinate = rng.nextInt(yEnd);
-        int particles = SOLID-1;
+        int particles = SOLID - 1;
 
         setValue(xCoordinate, yCoordinate, particles);
         System.err.println("Particle setted at " + xCoordinate + " " + yCoordinate);

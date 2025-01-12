@@ -6,10 +6,10 @@
 package evolutionaryAutomata;
 
 import cellularautomata.core.LookupTable;
+
 import java.util.Random;
 
 /**
- *
  * @author lagravas
  */
 public class MutationEngine {
@@ -20,8 +20,8 @@ public class MutationEngine {
     private int tableSize;
     // the random number generator
     private Random rng;
-    
-    public MutationEngine(double mutationProbability, int tableSize){
+
+    public MutationEngine(double mutationProbability, int tableSize) {
         this.mutationProbability = mutationProbability;
         this.tableSize = tableSize;
         rng = new Random();
@@ -29,24 +29,25 @@ public class MutationEngine {
 
     /**
      * Ask whether an individual will mutate or not
+     *
      * @return an integer representing the individual component to mutate or -1 if no mutation
      * shall take place.
      */
-    public int isGoingToMutate(){
-        if (rng.nextDouble() > mutationProbability){
+    public int isGoingToMutate() {
+        if (rng.nextDouble() > mutationProbability) {
             return rng.nextInt(tableSize);
-        }
-        else {
+        } else {
             return -1;
         }
     }
 
     /**
      * Each individual will have a certain number of mutations.
+     *
      * @param lut
      */
-    public void lookUpTableMutation(LookupTable lut){
-        
+    public void lookUpTableMutation(LookupTable lut) {
+
     }
 
 }

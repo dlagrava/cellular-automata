@@ -7,10 +7,9 @@ package hpp;
 
 import cellularautomata.core.IntegerCellularAutomata2D;
 import cellularautomata.display.ImageDisplayer;
-import cellularautomata.examples.*;
+import cellularautomata.examples.HPP;
 
 /**
- *
  * @author lagravas
  */
 public class RunableIterations extends Thread {
@@ -26,23 +25,23 @@ public class RunableIterations extends Thread {
         this.displayer = CA;
         this.internalCA = p;
     }
-    
+
     @Override
     public void run() {
         System.err.println("Run for " + maxIt + " iterations");
         for (int i = 0; i < maxIt; i++) {
-            
-            if ( ! reverse ) internalCA.collisionAndPropagation();
+
+            if (!reverse) internalCA.collisionAndPropagation();
             else {
                 ((HPP) internalCA).reverse();
                 reverse = false;
             }
 
             internalCA.exportValues(displayer);
-            displayer.repaint();            
-            
+            displayer.repaint();
+
             synchronized (this) {
-                while ( pause ) {
+                while (pause) {
                     try {
                         wait();
                     } catch (InterruptedException ex) {
@@ -65,5 +64,5 @@ public class RunableIterations extends Thread {
     public void setMaxIt(int it) {
         maxIt = it;
     }
-    
+
 }

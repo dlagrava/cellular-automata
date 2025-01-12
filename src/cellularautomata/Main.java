@@ -3,14 +3,13 @@
  */
 package cellularautomata;
 
-import evolutionaryAutomata.GeneticCADisplayer;
 import cellularautomata.core.*;
+import evolutionaryAutomata.GeneticCADisplayer;
 import evolutionaryAutomata.GeneticCellularAutomata;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
+
+import javax.swing.*;
 
 /**
- *
  * @author Daniel Lagrava
  */
 public class Main {
@@ -46,7 +45,7 @@ public class Main {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(new JScrollPane(panel));
-        frame.setSize(sizeX*xScale, sizeY*yScale);
+        frame.setSize(sizeX * xScale, sizeY * yScale);
         frame.setLocation(50, 50);
         frame.setVisible(true);
         ///////////////////////////////////
@@ -55,12 +54,12 @@ public class Main {
             ca.collisionAndPropagation();
 
 
-            if ( iT % itCrossover == 0 ) {
+            if (iT % itCrossover == 0) {
                 ca.exportValues(panel);
                 frame.repaint();
 
             }
-            if ( iT%itStats == 0 ){
+            if (iT % itStats == 0) {
                 ca.countOriginalRules();
             }
         }

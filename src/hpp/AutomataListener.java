@@ -4,14 +4,11 @@
  */
 package hpp;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.EventListener;
-import javax.swing.JButton;
-import javax.swing.JTextField;
 
 /**
- *
  * @author lagravas
  */
 public class AutomataListener implements ActionListener {
@@ -39,7 +36,7 @@ public class AutomataListener implements ActionListener {
         if (event.getSource() == sim) {
             if (!iteration.isAlive()) {
                 iteration.start();
-                iteration.setMaxIt( Integer.valueOf( nIter.getText() ) );
+                iteration.setMaxIt(Integer.valueOf(nIter.getText()));
                 sim.setText(PAUSE);
             } else {
                 if (iteration.pause) {
