@@ -91,10 +91,7 @@ public class GeneticCellularAutomata extends IntegerCellularAutomata2D {
         // computation of the fitness of every cell
         computeFitness();
         if (globalTimer % evolutionStep == 0) {
-            int crossOverNumber = 0;
             Double meanFitness = internalStatistics.meanFitness(fitness, xStart, xEnd, xStart, xEnd);
-            System.out.println("Crossover Time!");
-            System.out.println("Mean fitness of the system = " + meanFitness);
             for (int iX = xStart; iX < xEnd; iX++) {
                 for (int iY = yStart; iY < yEnd; iY++) {
                     // choose unfit individuals to make crossover
@@ -111,13 +108,10 @@ public class GeneticCellularAutomata extends IntegerCellularAutomata2D {
                             // apply crossover using the crossover engine
                             double biais = Math.abs(fitness[iX][iY] - fitness[fittest[0]][fittest[1]]) / (double) (evolutionStep / 2);
                             lookupTables[iX][iY] = crossOverEngine.applyCrossover(lookupTables[iX][iY], lookupTables[fittest[0]][fittest[1]], crossoverParameters);
-                            crossOverNumber++;
                         }
                     }
                 }
             }
-            System.out.println("A total of " + crossOverNumber + " crossovers were made.");
-            System.out.println("-------------------------------------------------------");
             // if crossover then we reset the fitness
             resetFitness();
             internalStatistics.rulesHistogram(lookupTables, xStart, xEnd, yStart, yEnd);
@@ -223,9 +217,9 @@ public class GeneticCellularAutomata extends IntegerCellularAutomata2D {
                 crossOverEngine = new OnePointCrossover();
                 break;
             case TWOPOINT:
-                break;
+                throw new UnsupportedOperationException("Two-point crossover is not implemented");
             default:
-                System.exit(1);
+                throw new IllegalArgumentException("Unknown crossover type: " + type);
 
         }
     }
@@ -270,7 +264,7 @@ public class GeneticCellularAutomata extends IntegerCellularAutomata2D {
                 }
                 break;
             default:
-                System.exit(1);
+                throw new IllegalArgumentException("Unknown rule distribution: " + type);
 
         }
     }
@@ -284,7 +278,6 @@ public class GeneticCellularAutomata extends IntegerCellularAutomata2D {
     }
 
     public void writeRulesStatistics(String fileName) {
-        System.out.println("Writing the histogram to " + fileName);
         internalStatistics.writeHistogram(fileName);
     }
 

@@ -9,7 +9,7 @@ package cellularautomata.core;
  */
 public class LookupTableFactory {
 
-    public enum Type {PARITY, WEST, NULL, UNKNOWN}
+    public enum Type {PARITY, WEST, NULL}
 
     ;
 
@@ -75,7 +75,7 @@ public class LookupTableFactory {
             case NULL:
                 return createNullRule(neighborNumber);
             default:
-                return null;
+                throw new IllegalArgumentException("Unknown lookup table type: " + t);
         }
     }
 

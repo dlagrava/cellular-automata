@@ -5,7 +5,7 @@ package cellularautomata.core;
  */
 public class NeighborhoodFactory {
 
-    public enum NeighborhoodType {VONNEUMANN, MOORE, MARGOLUS, UNKNOWN}
+    public enum NeighborhoodType {VONNEUMANN, MOORE, MARGOLUS}
 
     public static INeighborhood generate(NeighborhoodType type, int x, int y) {
         switch (type) {
@@ -16,7 +16,7 @@ public class NeighborhoodFactory {
             case MARGOLUS:
                 return new MargolusNeighborhood(x, y);
             default:
-                return null;
+                throw new IllegalArgumentException("Unknown neighborhood type: " + type);
         }
     }
 

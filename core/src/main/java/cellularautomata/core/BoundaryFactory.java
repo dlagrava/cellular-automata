@@ -8,18 +8,9 @@ package cellularautomata.core;
  */
 public class BoundaryFactory {
     // types of boundary condition
-    public enum BoundaryType {PERIODIC, FIXED, REFLEXIVE, ADIABATIC}
+    public enum BoundaryType {PERIODIC, FIXED, REFLEXIVE}
 
     ;
-
-    /**
-     * Create an adiabatic boundary condition
-     *
-     * @return
-     */
-    public static IBoundary generateAdiabaticBoundary() {
-        return null;
-    }
 
     /**
      * Create a reflexive boundary condition for a given neighborhood
