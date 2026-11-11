@@ -95,9 +95,7 @@ public class FallingSand extends IntegerCellularAutomata2D {
                 return slr + (1 - slr) * (sur * (1 - gur) + (1 - sur) * sul * (1 - gul) * sll);
             //return values[3]+(1-values[3])*(values[1]+(1-values[1])*values[0]*values[2]);
             default:
-                System.out.println("Unknown value. Exiting. Check the rule.");
-                System.exit(1);
-                return -1;
+                throw new IllegalStateException("Unknown Margolus position: " + position);
         }
     }
 

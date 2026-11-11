@@ -223,9 +223,9 @@ public class GeneticCellularAutomata extends IntegerCellularAutomata2D {
                 crossOverEngine = new OnePointCrossover();
                 break;
             case TWOPOINT:
-                break;
+                throw new UnsupportedOperationException("Two-point crossover is not implemented");
             default:
-                System.exit(1);
+                throw new IllegalArgumentException("Unknown crossover type: " + type);
 
         }
     }
