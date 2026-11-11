@@ -28,17 +28,20 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * JavaFX shell: pick a cellular automaton and run play / pause / step / reset.
@@ -83,6 +86,8 @@ public class DemoApp extends Application {
     };
 
     private final AtomicBoolean playing = new AtomicBoolean(false);
+    private final AtomicBoolean pendingReverse = new AtomicBoolean(false);
+    private final AtomicInteger remainingHppSteps = new AtomicInteger(-1);
     private final Object caLock = new Object();
 
     private ICellularAutomata ca;
@@ -91,6 +96,8 @@ public class DemoApp extends Application {
     private ComboBox<Example> examplePicker;
     private Spinner<Integer> sizeSpinner;
     private Slider speedSlider;
+    private VBox hppPanel;
+    private TextField hppIterationsField;
     private Stage stage;
     private volatile double framesPerSecond = 20;
     private ScheduledExecutorService loop;
@@ -127,10 +134,18 @@ public class DemoApp extends Application {
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) ->
                 framesPerSecond = newVal.doubleValue());
 
-        play.setOnAction(e -> playing.set(true));
+        play.setOnAction(e -> {
+            if (selectedExample() == Example.HPP) {
+                remainingHppSteps.set(parseHppIterations());
+            } else {
+                remainingHppSteps.set(-1);
+            }
+            playing.set(true);
+        });
         pause.setOnAction(e -> playing.set(false));
         step.setOnAction(e -> {
             playing.set(false);
+            remainingHppSteps.set(-1);
             runStep();
         });
         reset.setOnAction(e -> resetCa(sizeSpinner.getValue()));
@@ -150,6 +165,29 @@ public class DemoApp extends Application {
         controls.setPadding(new Insets(8));
         HBox.setHgrow(speedSlider, Priority.ALWAYS);
 
+        Button reverse = new Button("Reverse");
+        Button addParticle = new Button("Add Particle");
+        hppIterationsField = new TextField("100");
+        hppIterationsField.setPrefWidth(80);
+        reverse.setOnAction(e -> {
+            if (playing.get()) {
+                pendingReverse.set(true);
+            } else {
+                reverseHppNow();
+            }
+        });
+        addParticle.setOnAction(e -> addHppParticle());
+
+        hppPanel = new VBox(8,
+                new Label("HPP"),
+                reverse,
+                addParticle,
+                new Label("Iterations"),
+                hppIterationsField);
+        hppPanel.setPadding(new Insets(8));
+        hppPanel.setAlignment(Pos.TOP_LEFT);
+        setHppPanelVisible(false);
+
         StackPane center = new StackPane(imageView);
         center.setPadding(new Insets(8));
         center.setStyle("-fx-background-color: #1a1a1a;");
@@ -157,11 +195,12 @@ public class DemoApp extends Application {
         BorderPane root = new BorderPane();
         root.setTop(controls);
         root.setCenter(center);
+        root.setRight(hppPanel);
 
         resetCa(DEFAULT_SIZE);
         startLoop();
 
-        stage.setScene(new Scene(root, VIEW_SIZE + 32, VIEW_SIZE + 80));
+        stage.setScene(new Scene(root, VIEW_SIZE + 160, VIEW_SIZE + 80));
         stage.setOnCloseRequest(e -> shutdown());
         stage.show();
     }
@@ -203,23 +242,78 @@ public class DemoApp extends Application {
             if (ca == null) {
                 return;
             }
-            ca.collisionAndPropagation();
-            Platform.runLater(() -> {
-                synchronized (caLock) {
-                    if (ca != null && exporter != null) {
-                        ca.exportValues(exporter);
-                    }
-                }
-            });
+            if (pendingReverse.compareAndSet(true, false) && ca instanceof HPP hpp) {
+                hpp.reverse();
+            } else {
+                ca.collisionAndPropagation();
+            }
+            Platform.runLater(this::exportToView);
         }
+        int left = remainingHppSteps.get();
+        if (left > 0) {
+            if (remainingHppSteps.decrementAndGet() <= 0) {
+                playing.set(false);
+                remainingHppSteps.set(-1);
+            }
+        }
+    }
+
+    private void reverseHppNow() {
+        synchronized (caLock) {
+            if (!(ca instanceof HPP hpp)) {
+                return;
+            }
+            hpp.reverse();
+            exportToView();
+        }
+    }
+
+    private void addHppParticle() {
+        synchronized (caLock) {
+            if (!(ca instanceof HPP hpp)) {
+                return;
+            }
+            hpp.addParticle();
+            exportToView();
+        }
+    }
+
+    private void exportToView() {
+        synchronized (caLock) {
+            if (ca != null && exporter != null) {
+                ca.exportValues(exporter);
+            }
+        }
+    }
+
+    private Example selectedExample() {
+        Example example = examplePicker.getSelectionModel().getSelectedItem();
+        return example == null ? Example.GAME_OF_LIFE : example;
+    }
+
+    private int parseHppIterations() {
+        try {
+            int value = Integer.parseInt(hppIterationsField.getText().trim());
+            return Math.max(1, value);
+        } catch (NumberFormatException e) {
+            hppIterationsField.setText("100");
+            return 100;
+        }
+    }
+
+    private void setHppPanelVisible(boolean visible) {
+        if (hppPanel == null) {
+            return;
+        }
+        hppPanel.setVisible(visible);
+        hppPanel.setManaged(visible);
     }
 
     private void resetCa(int size) {
         playing.set(false);
-        Example example = examplePicker.getSelectionModel().getSelectedItem();
-        if (example == null) {
-            example = Example.GAME_OF_LIFE;
-        }
+        pendingReverse.set(false);
+        remainingHppSteps.set(-1);
+        Example example = selectedExample();
         synchronized (caLock) {
             Created created = createExample(example, size);
             ca = created.ca;
@@ -227,6 +321,7 @@ public class DemoApp extends Application {
             ca.exportValues(exporter);
             imageView.setImage(exporter.getImage());
         }
+        setHppPanelVisible(example == Example.HPP);
         stage.setTitle("Cellular Automata — " + example);
     }
 
