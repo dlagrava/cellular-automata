@@ -7,7 +7,7 @@ package evolutionaryAutomata;
 import cellularautomata.core.IntegerCellularAutomata2D;
 import cellularautomata.core.LookupTable;
 import cellularautomata.core.Setup;
-import cellularautomata.display.IExporter;
+import cellularautomata.core.IExporter;
 
 import java.util.Random;
 

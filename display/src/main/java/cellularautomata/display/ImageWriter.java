@@ -1,5 +1,6 @@
 package cellularautomata.display;
 
+import cellularautomata.core.IExporter;
 import cellularautomata.core.Tools;
 
 import javax.imageio.ImageIO;

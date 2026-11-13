@@ -4,7 +4,6 @@
 
 package cellularautomata.core;
 
-import cellularautomata.display.IExporter;
 
 /**
  * A simple implementation of an integer valued CA.
