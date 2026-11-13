@@ -128,7 +128,7 @@ public class GeneticCellularAutomata extends IntegerCellularAutomata2D {
                 // we comparte the old value
                 int oldValue = temporaryArrays[iX][iY][0];
                 // and the new value of the CA
-                int newValue = getValue(iX, iY);
+                int newValue = getCell(iX, iY);
                 // we say that if a resource is consumed the fitness is better
                 if (oldValue == 1 && newValue == 0) {
                     fitness[iX][iY] += 1.0;

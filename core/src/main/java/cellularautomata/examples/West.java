@@ -28,7 +28,8 @@ public class West extends IntegerCellularAutomata2D {
     }
 
     /**
-     * Rule for west automata, if the left neighbor is 1 then the cell becomes 1
+     * West motion: copy the east neighbor (Von Neumann values[1] = (x+1,y)).
+     * Ones then travel left (−x); not the west/left neighbor at values[3].
      *
      * @param x
      * @param y
@@ -37,8 +38,7 @@ public class West extends IntegerCellularAutomata2D {
      */
     @Override
     public int applyRule(int x, int y, int[] values) {
-        return (values[2] == 1) ? 1 : 0;
-
+        return values[1];
     }
 
     public static void main(String[] args) {

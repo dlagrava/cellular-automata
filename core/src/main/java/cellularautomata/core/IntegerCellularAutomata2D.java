@@ -131,11 +131,13 @@ public abstract class IntegerCellularAutomata2D implements ICellularAutomata {
     /**
      * This method must apply the rule intended for the evolution to the (x,y) cell
      * that has the neighbor information in the values multidimensional array.
+     * Coordinates are storage indices (including boundary padding), matching
+     * {@link Setup#getNeighborIndices(int, int)}; use {@link #getCell}/{@link #setCell}.
      *
-     * @param x
-     * @param y
-     * @param values
-     * @return
+     * @param x storage x
+     * @param y storage y
+     * @param values neighbor values
+     * @return next cell value
      */
     public abstract int applyRule(int x, int y, int[] values);
 
@@ -160,25 +162,50 @@ public abstract class IntegerCellularAutomata2D implements ICellularAutomata {
     }
 
     /**
-     * Modify the value of the (x,y) cell of the CA.
+     * Set a cell in logical user coordinates {@code [0, sizeX) × [0, sizeY)}.
      *
-     * @param x
-     * @param y
-     * @param value
+     * @param x logical x
+     * @param y logical y
+     * @param value cell value
      */
     public void setValue(int x, int y, int value) {
+        requireLogicalInBounds(x, y);
+        int width = setup.getBoundaryWidth();
+        cells[x + width][y + width] = value;
+    }
+
+    /**
+     * Get a cell in logical user coordinates {@code [0, sizeX) × [0, sizeY)}.
+     *
+     * @param x logical x
+     * @param y logical y
+     * @return cell value
+     */
+    public int getValue(int x, int y) {
+        requireLogicalInBounds(x, y);
+        int width = setup.getBoundaryWidth();
+        return cells[x + width][y + width];
+    }
+
+    /**
+     * Set a cell in padded storage coordinates (for rules / propagation).
+     */
+    protected void setCell(int x, int y, int value) {
         cells[x][y] = value;
     }
 
     /**
-     * Retrieve the value of the (x,y) cell of the CA.
-     *
-     * @param x
-     * @param y
-     * @return
+     * Get a cell in padded storage coordinates (for rules / propagation).
      */
-    public int getValue(int x, int y) {
+    protected int getCell(int x, int y) {
         return cells[x][y];
+    }
+
+    private void requireLogicalInBounds(int x, int y) {
+        if (x < 0 || x >= sizeX || y < 0 || y >= sizeY) {
+            throw new IndexOutOfBoundsException(
+                    "logical (" + x + "," + y + ") outside [0," + sizeX + ")×[0," + sizeY + ")");
+        }
     }
 
 }
