@@ -16,16 +16,12 @@ public class Tools {
      * @param fileName
      * @param table
      */
-    public static void initializeFromBinaryImage(String fileName, int[][] table) {
-        try {
-            BufferedImage image = ImageIO.read(new File(fileName));
-            for (int iX = 0; iX < table.length; ++iX) {
-                for (int iY = 0; iY < table[iX].length; ++iY) {
-                    table[iX][iY] = image.getRGB(iX, iY);
-                }
+    public static void initializeFromBinaryImage(String fileName, int[][] table) throws IOException {
+        BufferedImage image = ImageIO.read(new File(fileName));
+        for (int iX = 0; iX < table.length; ++iX) {
+            for (int iY = 0; iY < table[iX].length; ++iY) {
+                table[iX][iY] = image.getRGB(iX, iY);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

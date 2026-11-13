@@ -154,7 +154,5 @@ public class HPP extends IntegerCellularAutomata2D {
         int particles = SOLID - 1;
 
         setValue(xCoordinate, yCoordinate, particles);
-        System.err.println("Particle setted at " + xCoordinate + " " + yCoordinate);
-
     }
 }
