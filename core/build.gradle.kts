@@ -2,4 +2,12 @@ plugins {
     `java-library`
 }
 
-// UI-free cellular automata library (sources arrive in a later commit)
+dependencies {
+    testImplementation(platform("org.junit:junit-bom:5.11.4"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}

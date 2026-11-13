@@ -36,19 +36,19 @@ public class FallingSand extends IntegerCellularAutomata2D {
 
         for (int iX = 1; iX < realSizeX / 2 - 6; iX++) {
             int iY = realSizeY / 2;
-            setValue(iX, iY + 4, GLASS);
-            setValue(iX, iY + 5, GLASS);
+            setCell(iX, iY + 4, GLASS);
+            setCell(iX, iY + 5, GLASS);
         }
 
         for (int iX = realSizeX / 2 + 1; iX < realSizeX - 1; iX++) {
             int iY = realSizeY / 2;
-            setValue(iX, iY, GLASS);
-            setValue(iX, iY + 1, GLASS);
+            setCell(iX, iY, GLASS);
+            setCell(iX, iY + 1, GLASS);
         }
 
         for (int iX = 1; iX < realSizeX - 1; iX++) {
             int iY = 9 * realSizeY / 10;
-            setValue(iX, iY, GLASS);
+            setCell(iX, iY, GLASS);
         }
 
     }
@@ -62,7 +62,7 @@ public class FallingSand extends IntegerCellularAutomata2D {
     @Override
     public int applyRule(int x, int y, int[] values) {
         // GLASS valued cells do not move
-        if ((getValue(x, y) & GLASS) == 2) return getValue(x, y);
+        if ((getCell(x, y) & GLASS) == 2) return getCell(x, y);
 
         // retrieving neighbors twice to get same status
         int[][] neighbors = setup.getNeighborIndices(x, y);

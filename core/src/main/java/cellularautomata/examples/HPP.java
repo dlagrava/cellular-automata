@@ -51,15 +51,15 @@ public class HPP extends IntegerCellularAutomata2D {
     @Override
     public int applyRule(int x, int y, int[] values) {
 
-        if (getValue(x, y) == NORTH + SOUTH) {
+        if (getCell(x, y) == NORTH + SOUTH) {
             return EAST + WEST;
         }
 
-        if (getValue(x, y) == EAST + WEST) {
+        if (getCell(x, y) == EAST + WEST) {
             return NORTH + SOUTH;
         }
 
-        return getValue(x, y);
+        return getCell(x, y);
     }
 
     /**
@@ -71,14 +71,14 @@ public class HPP extends IntegerCellularAutomata2D {
 
         for (int iX = xStart; iX < xEnd; ++iX) {
             for (int iY = yStart; iY < yEnd; ++iY) {
-                if (getDirectionValue(getValue(iX, iY), SOLID) == 0) {
+                if (getDirectionValue(getCell(iX, iY), SOLID) == 0) {
                     int[] neighborValues = temporaryArrays[iX][iY];
                     int N = getDirectionValue(neighborValues[4], NORTH);
                     int S = getDirectionValue(neighborValues[2], SOUTH);
                     int E = getDirectionValue(neighborValues[3], EAST);
                     int W = getDirectionValue(neighborValues[1], WEST);
                     int newValue = N * NORTH + S * SOUTH + E * EAST + W * WEST;
-                    setValue(iX, iY, newValue);
+                    setCell(iX, iY, newValue);
                 }
                 // case of a solid place
                 else {
@@ -89,7 +89,7 @@ public class HPP extends IntegerCellularAutomata2D {
                     int E = getDirectionValue(neighborValues[3], EAST);
                     int W = getDirectionValue(neighborValues[1], WEST);
                     int newValue = N * SOUTH + S * NORTH + E * WEST + W * EAST + SOLID;
-                    setValue(iX, iY, newValue);
+                    setCell(iX, iY, newValue);
                 }
             }
         }
@@ -120,15 +120,15 @@ public class HPP extends IntegerCellularAutomata2D {
                 int S = getDirectionValue(neighborValues[0], SOUTH);
                 int E = getDirectionValue(neighborValues[0], EAST);
                 int W = getDirectionValue(neighborValues[0], WEST);
-                if (getDirectionValue(getValue(iX, iY), SOLID) == 0) {
+                if (getDirectionValue(getCell(iX, iY), SOLID) == 0) {
                     int newValue = N * SOUTH + S * NORTH + E * WEST + W * EAST;
-                    setValue(iX, iY, newValue);
+                    setCell(iX, iY, newValue);
                 }
                 // case of a solid place
                 else {
                     // all velocities should be inversed
                     int newValue = N * NORTH + S * SOUTH + E * EAST + W * WEST + SOLID;
-                    setValue(iX, iY, newValue);
+                    setCell(iX, iY, newValue);
                 }
             }
         }
@@ -149,8 +149,8 @@ public class HPP extends IntegerCellularAutomata2D {
 
     public void addParticle() {
         Random rng = new Random();
-        int xCoordinate = rng.nextInt(xEnd);
-        int yCoordinate = rng.nextInt(yEnd);
+        int xCoordinate = rng.nextInt(sizeX);
+        int yCoordinate = rng.nextInt(sizeY);
         int particles = SOLID - 1;
 
         setValue(xCoordinate, yCoordinate, particles);

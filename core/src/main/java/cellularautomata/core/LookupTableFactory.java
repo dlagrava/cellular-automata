@@ -32,7 +32,8 @@ public class LookupTableFactory {
     }
 
     /**
-     * create the West rule (the 1's travel left) for a given neighbor number
+     * West rule LUT: next state = east neighbor bit (j >> 1) & 1, same as
+     * {@code West.applyRule} returning Von Neumann {@code values[1]}. Ones travel left (−x).
      *
      * @param neighborNumber
      * @return

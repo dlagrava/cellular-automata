@@ -22,10 +22,11 @@ public class LangtonsAnt extends IntegerCellularAutomata2D {
     private void randomInit(int n, int sx, int sy) {
         Random rnd = new Random();
         antPositions = new int[n][3];
+        int width = setup.getBoundaryWidth();
 
         for (int i = 0; i < n; i++) {
-            antPositions[i][0] = rnd.nextInt(sx);
-            antPositions[i][1] = rnd.nextInt(sy);
+            antPositions[i][0] = width + rnd.nextInt(sx);
+            antPositions[i][1] = width + rnd.nextInt(sy);
             antPositions[i][2] = rnd.nextInt(4) + 1;
         }
     }
@@ -56,6 +57,7 @@ public class LangtonsAnt extends IntegerCellularAutomata2D {
                         antPositions[ant][1]++;
                         antPositions[ant][2] = 1;
                 }
+                wrapAnt(ant);
                 return ant + 1;
             } else {
                 // the third value marks the direction
@@ -76,10 +78,24 @@ public class LangtonsAnt extends IntegerCellularAutomata2D {
                         antPositions[ant][1]--;
                         antPositions[ant][2] = 3;
                 }
+                wrapAnt(ant);
                 return 0;
             }
         }
         return values[0];
+    }
+
+    private void wrapAnt(int ant) {
+        if (antPositions[ant][0] < xStart) {
+            antPositions[ant][0] = xEnd - 1;
+        } else if (antPositions[ant][0] >= xEnd) {
+            antPositions[ant][0] = xStart;
+        }
+        if (antPositions[ant][1] < yStart) {
+            antPositions[ant][1] = yEnd - 1;
+        } else if (antPositions[ant][1] >= yEnd) {
+            antPositions[ant][1] = yStart;
+        }
     }
 
     private int hasAnt(int x, int y) {
