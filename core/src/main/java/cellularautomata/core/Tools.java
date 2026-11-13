@@ -1,9 +1,5 @@
 package cellularautomata.core;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -11,19 +7,6 @@ import java.util.Random;
  * @author lagravas
  */
 public class Tools {
-
-    /**
-     * @param fileName
-     * @param table
-     */
-    public static void initializeFromBinaryImage(String fileName, int[][] table) throws IOException {
-        BufferedImage image = ImageIO.read(new File(fileName));
-        for (int iX = 0; iX < table.length; ++iX) {
-            for (int iY = 0; iY < table[iX].length; ++iY) {
-                table[iX][iY] = image.getRGB(iX, iY);
-            }
-        }
-    }
 
     /**
      * @param table

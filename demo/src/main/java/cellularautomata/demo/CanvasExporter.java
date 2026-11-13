@@ -1,7 +1,7 @@
 package cellularautomata.demo;
 
 import cellularautomata.display.ColorMap;
-import cellularautomata.display.IExporter;
+import cellularautomata.core.IExporter;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 

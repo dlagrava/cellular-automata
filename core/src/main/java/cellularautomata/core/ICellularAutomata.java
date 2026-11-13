@@ -4,7 +4,6 @@
 
 package cellularautomata.core;
 
-import cellularautomata.display.IExporter;
 
 /**
  * @author Daniel Lagrava

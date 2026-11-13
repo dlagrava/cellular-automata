@@ -1,4 +1,4 @@
-package cellularautomata.display;
+package cellularautomata.core;
 
 /**
  * Interface for objects that export the information on a cellular automata state.
