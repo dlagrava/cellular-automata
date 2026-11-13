@@ -56,7 +56,7 @@ public class RuleDecoder {
                 lines.add(line);
             }
         } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
+            throw new IllegalStateException("Failed to read rule file: " + fileName, e);
         }
     }
 
@@ -91,9 +91,9 @@ public class RuleDecoder {
                 integerValues[i] = Integer.parseInt(values[i]);
             }
             // putting the results in the var HashMap
-            vars.put(new Character(varName.charAt(0)), integerValues);
+            vars.put(varName.charAt(0), integerValues);
         } else {
-            System.out.println("Merdeeee");
+            throw new IllegalArgumentException("Invalid variable declaration: " + variable);
         }
     }
 
@@ -161,7 +161,7 @@ public class RuleDecoder {
         for (char c : rule) {
             if (Character.isLetter(c)) {
                 countVariableNumber++;
-                int[] values = vars.get(new Character(c));
+                int[] values = vars.get(c);
                 rulesNumber *= values.length;
             }
         }
