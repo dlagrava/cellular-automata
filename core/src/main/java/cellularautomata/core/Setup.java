@@ -7,11 +7,14 @@ package cellularautomata.core;
  */
 public class Setup {
 
-    private final IBoundary boundary; // Boundary type
-    private final INeighborhood[][] neighborhood; // The neighbor indexes
+    private final IBoundary boundary;
+    /** Shared Moore / Von Neumann; unused for Margolus. */
+    private final INeighborhood neighborhood;
+    /** Per-cell Margolus instances; null for Moore / Von Neumann. */
+    private final INeighborhood[][] margolusGrid;
 
-    private final int realSizeX; // size of the CA in x + border cells
-    private final int realSizeY; // size of the CA en y + border cells
+    private final int realSizeX;
+    private final int realSizeY;
 
     /**
      * Constructor for a Setup object.
@@ -23,31 +26,41 @@ public class Setup {
      * @param parameters   if there is need for additional information only (example: FixedBoundary needs a value to get fixed to).
      */
     public Setup(BoundaryFactory.BoundaryType boundaryType, NeighborhoodFactory.NeighborhoodType n, int sizeX, int sizeY, double... parameters) {
-        // selecting among the disponible boundaries
+        INeighborhood prototype;
+        if (n == NeighborhoodFactory.NeighborhoodType.MARGOLUS) {
+            prototype = NeighborhoodFactory.generate(n, 0, 0);
+            neighborhood = null;
+        } else {
+            prototype = NeighborhoodFactory.generate(n);
+            neighborhood = prototype;
+        }
+
         switch (boundaryType) {
             case PERIODIC:
-                boundary = BoundaryFactory.generatePeriodicBoundary(NeighborhoodFactory.generate(n, 0, 0));
+                boundary = BoundaryFactory.generatePeriodicBoundary(prototype);
                 break;
             case FIXED:
-                boundary = BoundaryFactory.generateFixedBoundary(NeighborhoodFactory.generate(n, 0, 0), (int) parameters[0]);
+                boundary = BoundaryFactory.generateFixedBoundary(prototype, (int) parameters[0]);
                 break;
             case REFLEXIVE:
-                boundary = BoundaryFactory.generateReflexiveBoundary(NeighborhoodFactory.generate(n, 0, 0));
+                boundary = BoundaryFactory.generateReflexiveBoundary(prototype);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown Boundary Type: " + boundaryType);
         }
 
-        // computation of internal table CA sizes
         realSizeX = sizeX + 2 * boundary.getWidth();
         realSizeY = sizeY + 2 * boundary.getWidth();
-        // For each cell we use a neighbor
-        neighborhood = new INeighborhood[realSizeX][realSizeY];
-        // computation of the indexes per cell
-        for (int iX = 0; iX < realSizeX; iX++) {
-            for (int iY = 0; iY < realSizeY; iY++) {
-                neighborhood[iX][iY] = NeighborhoodFactory.generate(n, iX, iY);
+
+        if (n == NeighborhoodFactory.NeighborhoodType.MARGOLUS) {
+            margolusGrid = new INeighborhood[realSizeX][realSizeY];
+            for (int iX = 0; iX < realSizeX; iX++) {
+                for (int iY = 0; iY < realSizeY; iY++) {
+                    margolusGrid[iX][iY] = NeighborhoodFactory.generate(n, iX, iY);
+                }
             }
+        } else {
+            margolusGrid = null;
         }
     }
 
@@ -66,7 +79,10 @@ public class Setup {
      * @return
      */
     public int getNeighborNumber() {
-        return neighborhood[0][0].getTotalNeighborNumber();
+        if (margolusGrid != null) {
+            return margolusGrid[0][0].getTotalNeighborNumber();
+        }
+        return neighborhood.getTotalNeighborNumber();
     }
 
     /**
@@ -76,10 +92,14 @@ public class Setup {
      * @param y the y coordinate of the cell
      * @return a bidimensional table, for instance table[i][0] = coordinate x of the
      * i neighbor and table[i][1] = coordinate y of the i neighbor. i varies according
-     * to the neighbor number.
+     * to the neighbor number. For Moore / Von Neumann the array is reused; do not
+     * retain it across calls.
      */
     public int[][] getNeighborIndices(int x, int y) {
-        return neighborhood[x][y].getNeighborIndices(x, y);
+        if (margolusGrid != null) {
+            return margolusGrid[x][y].getNeighborIndices(x, y);
+        }
+        return neighborhood.getNeighborIndices(x, y);
     }
 
 

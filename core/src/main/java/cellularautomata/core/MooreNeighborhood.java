@@ -1,60 +1,47 @@
 package cellularautomata.core;
 
 /**
- * This is an implementation of the Moore neighborhood or the D2Q9 neighborhood.
- * The convention for the neighbors is the following:
+ * Moore (D2Q9) neighborhood. Neighbor order:
+ * <pre>
  * 615
  * 204
  * 738
+ * </pre>
+ *
+ * <p>{@link #getNeighborIndices(int, int)} returns a reusable buffer valid only
+ * until the next call on this instance.
  *
  * @author Daniel Lagrava
  */
 public class MooreNeighborhood implements INeighborhood {
 
-    int[][] neighbors;
+    private static final int[][] OFFSETS = {
+            {0, 0},
+            {1, 0},
+            {0, 1},
+            {-1, 0},
+            {0, -1},
+            {1, 1},
+            {-1, 1},
+            {-1, -1},
+            {1, -1}
+    };
 
-    private final int NEIGHBORS = 9;
-    private final int RADIUS = 1;
-
-    public MooreNeighborhood(int x, int y) {
-        neighbors = new int[NEIGHBORS][2];
-        computeNeighbors(x, y);
-    }
+    private final int[][] neighbors = new int[OFFSETS.length][2];
 
     public int[][] getNeighborIndices(int x, int y) {
+        for (int i = 0; i < OFFSETS.length; i++) {
+            neighbors[i][0] = x + OFFSETS[i][0];
+            neighbors[i][1] = y + OFFSETS[i][1];
+        }
         return neighbors;
     }
 
     public int getTotalNeighborNumber() {
-        return NEIGHBORS;
+        return OFFSETS.length;
     }
 
     public int getRadius() {
-        return RADIUS;
+        return 1;
     }
-
-    // The computation of the neighbors
-    private void computeNeighbors(int x, int y) {
-        // the N, W, S and E neighbors
-        neighbors[0][0] = x;
-        neighbors[0][1] = y;
-        neighbors[1][0] = x + 1;
-        neighbors[1][1] = y;
-        neighbors[2][0] = x;
-        neighbors[2][1] = y + 1;
-        neighbors[3][0] = x - 1;
-        neighbors[3][1] = y;
-        neighbors[4][0] = x;
-        neighbors[4][1] = y - 1;
-        // the diagonal neighbors
-        neighbors[5][0] = x + 1;
-        neighbors[5][1] = y + 1;
-        neighbors[6][0] = x - 1;
-        neighbors[6][1] = y + 1;
-        neighbors[7][0] = x - 1;
-        neighbors[7][1] = y - 1;
-        neighbors[8][0] = x + 1;
-        neighbors[8][1] = y - 1;
-    }
-
 }

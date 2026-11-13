@@ -42,6 +42,47 @@ class SetupTest {
                         SIZE_Y));
     }
 
+    @Test
+    void vonNeumannNeighborCoordsMatchOffsets() {
+        Setup setup = create(
+                BoundaryFactory.BoundaryType.PERIODIC,
+                NeighborhoodFactory.NeighborhoodType.VONNEUMANN);
+        int x = 4;
+        int y = 3;
+        int[][] n = setup.getNeighborIndices(x, y);
+        assertEquals(5, n.length);
+        assertNeighbor(n[0], x, y);
+        assertNeighbor(n[1], x + 1, y);
+        assertNeighbor(n[2], x, y + 1);
+        assertNeighbor(n[3], x - 1, y);
+        assertNeighbor(n[4], x, y - 1);
+    }
+
+    @Test
+    void mooreNeighborCoordsMatchOffsets() {
+        Setup setup = create(
+                BoundaryFactory.BoundaryType.PERIODIC,
+                NeighborhoodFactory.NeighborhoodType.MOORE);
+        int x = 5;
+        int y = 4;
+        int[][] n = setup.getNeighborIndices(x, y);
+        assertEquals(9, n.length);
+        assertNeighbor(n[0], x, y);
+        assertNeighbor(n[1], x + 1, y);
+        assertNeighbor(n[2], x, y + 1);
+        assertNeighbor(n[3], x - 1, y);
+        assertNeighbor(n[4], x, y - 1);
+        assertNeighbor(n[5], x + 1, y + 1);
+        assertNeighbor(n[6], x - 1, y + 1);
+        assertNeighbor(n[7], x - 1, y - 1);
+        assertNeighbor(n[8], x + 1, y - 1);
+    }
+
+    private static void assertNeighbor(int[] pair, int expectedX, int expectedY) {
+        assertEquals(expectedX, pair[0]);
+        assertEquals(expectedY, pair[1]);
+    }
+
     private static Setup create(
             BoundaryFactory.BoundaryType boundary,
             NeighborhoodFactory.NeighborhoodType neighborhood) {
