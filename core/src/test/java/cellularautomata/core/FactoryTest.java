@@ -11,11 +11,17 @@ class FactoryTest {
     @Test
     void neighborhoodFactoryProducesKnownTypes() {
         assertEquals(5, NeighborhoodFactory.generate(
-                NeighborhoodFactory.NeighborhoodType.VONNEUMANN, 0, 0).getTotalNeighborNumber());
+                NeighborhoodFactory.NeighborhoodType.VONNEUMANN).getTotalNeighborNumber());
         assertEquals(9, NeighborhoodFactory.generate(
-                NeighborhoodFactory.NeighborhoodType.MOORE, 0, 0).getTotalNeighborNumber());
+                NeighborhoodFactory.NeighborhoodType.MOORE).getTotalNeighborNumber());
         assertEquals(5, NeighborhoodFactory.generate(
                 NeighborhoodFactory.NeighborhoodType.MARGOLUS, 0, 0).getTotalNeighborNumber());
+    }
+
+    @Test
+    void margolusRequiresCoordinates() {
+        assertThrows(IllegalArgumentException.class, () ->
+                NeighborhoodFactory.generate(NeighborhoodFactory.NeighborhoodType.MARGOLUS));
     }
 
     @Test
@@ -28,7 +34,7 @@ class FactoryTest {
     @Test
     void boundaryFactoryProducesKnownTypes() {
         INeighborhood n = NeighborhoodFactory.generate(
-                NeighborhoodFactory.NeighborhoodType.VONNEUMANN, 0, 0);
+                NeighborhoodFactory.NeighborhoodType.VONNEUMANN);
         assertEquals(1, BoundaryFactory.generatePeriodicBoundary(n).getWidth());
         assertEquals(1, BoundaryFactory.generateReflexiveBoundary(n).getWidth());
         assertEquals(1, BoundaryFactory.generateFixedBoundary(n, 0).getWidth());
@@ -37,7 +43,7 @@ class FactoryTest {
     @Test
     void neighborhoodFactoryRejectsNullType() {
         assertThrows(NullPointerException.class, () ->
-                NeighborhoodFactory.generate(null, 0, 0));
+                NeighborhoodFactory.generate(null));
     }
 
     @Test

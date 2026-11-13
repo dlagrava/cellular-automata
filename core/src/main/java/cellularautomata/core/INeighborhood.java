@@ -10,11 +10,12 @@ package cellularautomata.core;
 public interface INeighborhood {
 
     /**
-     * Given a neighborhood implementation, return the neighbors of location (i,j)
+     * Neighbors of location (i, j). Implementations may return a reused buffer
+     * valid only until the next call on the same instance — consume immediately.
      *
      * @param i
      * @param j
-     * @return
+     * @return neighbor coordinates; row {@code k} is {@code {x, y}}
      */
     int[][] getNeighborIndices(int i, int j);
 
