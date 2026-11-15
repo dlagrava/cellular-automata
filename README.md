@@ -17,6 +17,18 @@ cellular-automata/
 | **core** | Setup, neighborhoods, boundaries, lookup tables, example rules, evolutionary CA engines, `IExporter` / `ColorMap` / `ImageWriter` |
 | **demo** | JavaFX shell: pick a CA, play / pause / step / reset, optional HPP side panel |
 
+### Genetic CA (`evolutionaryAutomata`)
+
+Each cell owns a lookup-table genome. Fitness counts resource consumption (`1→0`); every few steps, below-mean cells adopt a crossover offspring with their fittest neighbor (optional bit-flip mutation). Export shows each LUT as an integer so rule diversity is visible.
+
+```java
+GeneticCellularAutomata genetic = new GeneticCellularAutomata(
+        size, size, setup, evolutionStep, false); // optional StartingPattern
+genetic.initializeRules(RuleDistribution.HORIZONTALSPLIT, rule1, rule2);
+genetic.selectCrossoverType(CrossoverType.UNIFORM, 0.5); // or ONEPOINT / TWOPOINT
+// genetic.selectMutation(0.01); // optional, off by default
+```
+
 ## Requirements
 
 - JDK 21

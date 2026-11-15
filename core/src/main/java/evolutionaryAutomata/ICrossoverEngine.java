@@ -1,31 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package evolutionaryAutomata;
 
 import cellularautomata.core.LookupTable;
 
 /**
- * Interface for a Crossover engine. The principal method of implementing classes
- * should be
+ * Strategy that builds an offspring lookup table from two parent genomes.
  *
- * @author lagravas
+ * @author Daniel Lagrava
  */
 public interface ICrossoverEngine {
 
-
     /**
-     * Apply a crossover between parent1 and parent2 to obtain an offspring that
-     * is supposed to be better than both of them.
-     * Mutation and other operations should be implemented in this method as well.
+     * Crossover {@code parent1} and {@code parent2}.
      *
-     * @param parent1
-     * @param parent2
-     * @return
+     * @param parent1    first parent (typically the unfit cell)
+     * @param parent2    second parent (typically the fitter neighbor)
+     * @param parameters engine-specific knobs; trailing value may be a fitness bias in {@code [0, 1]}
+     * @return offspring lookup table
      */
-    public LookupTable applyCrossover(LookupTable parent1, LookupTable parent2, double... parameters);
-
-
+    LookupTable applyCrossover(LookupTable parent1, LookupTable parent2, double... parameters);
 }
