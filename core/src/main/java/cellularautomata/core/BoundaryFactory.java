@@ -40,6 +40,17 @@ public class BoundaryFactory {
      * @return
      */
     public static IBoundary generateFixedBoundary(INeighborhood neighborhood, int value) {
+        return generateFixedBoundary(neighborhood, (double) value);
+    }
+
+    /**
+     * Generate a boundary condition that fixes a constant value
+     *
+     * @param neighborhood
+     * @param value
+     * @return
+     */
+    public static IBoundary generateFixedBoundary(INeighborhood neighborhood, double value) {
         return new FixedBoundary(neighborhood, value);
     }
 }

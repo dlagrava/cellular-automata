@@ -5,21 +5,25 @@ package cellularautomata.display;
  */
 public abstract class ColorMap {
 
-    protected int minValue;
-    protected int maxValue;
+    protected double minValue;
+    protected double maxValue;
 
     public ColorMap(int minValue, int maxValue) {
         this.minValue = minValue;
         this.maxValue = maxValue;
     }
 
-    public abstract int convertValue(int value);
+    public int convertValue(int value) {
+        return convertValue((double) value);
+    }
 
-    public void setMinValue(int value) {
+    public abstract int convertValue(double value);
+
+    public void setMinValue(double value) {
         this.minValue = value;
     }
 
-    public void setMaxValue(int value) {
+    public void setMaxValue(double value) {
         this.maxValue = value;
     }
 

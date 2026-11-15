@@ -17,15 +17,16 @@ public class HotColorMap extends ColorMap {
      * @return
      */
     @Override
-    public int convertValue(int value) {
+    public int convertValue(double value) {
         if (maxValue > minValue) {
-            double length = (double) maxValue - (double) minValue;
+            double length = maxValue - minValue;
+            double shifted = value - minValue;
             double n = 3.0 / 8.0 * length;
-            int r = ((double) value <= n) ? (int) (((double) (value) / n) * 255.0) : 255;
+            int r = (shifted <= n) ? (int) ((shifted / n) * 255.0) : 255;
             int g = 0;
-            if (value < 2 * n && value >= n) g = (int) (((double) (value - n) / (n) * 255.0));
-            if (value >= 2 * n) g = 255;
-            int b = ((double) value < 2 * n) ? 0 : (int) (((double) (value - 2 * n) / (length - 2 * n)) * 255.0);
+            if (shifted < 2 * n && shifted >= n) g = (int) (((shifted - n) / n) * 255.0);
+            if (shifted >= 2 * n) g = 255;
+            int b = (shifted < 2 * n) ? 0 : (int) (((shifted - 2 * n) / (length - 2 * n)) * 255.0);
             return b + (g << 8) + (r << 16);
         } else {
             return 0;

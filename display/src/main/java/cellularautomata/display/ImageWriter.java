@@ -60,6 +60,29 @@ public class ImageWriter implements IExporter {
         }
     }
 
+    public void writeDoubleValues(double[][] values) {
+        try {
+            String outputFile = fileName;
+            FileOutputStream stream = new FileOutputStream(outputFile);
+
+            if (isDynamic) {
+                double min = Tools.getMin(values);
+                double max = Tools.getMax(values);
+                colorMap.setMinValue(min);
+                colorMap.setMaxValue(max);
+            }
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    image.setRGB(i, j, colorMap.convertValue(values[i][j]));
+                }
+            }
+            ImageIO.write(image, "gif", stream);
+
+        } catch (IOException ex) {
+            Logger.getLogger(ImageWriter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public static String padding(int x, int length) {
         String number = Integer.toString(x);
         char[] res = new char[length];

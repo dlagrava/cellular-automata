@@ -10,6 +10,7 @@ import cellularautomata.display.ColorMap;
 import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.HotColorMap;
 import cellularautomata.display.JetColorMap;
+import cellularautomata.examples.Diffusion;
 import cellularautomata.examples.FallingSand;
 import cellularautomata.examples.GameOfLife;
 import cellularautomata.examples.HPP;
@@ -63,6 +64,7 @@ public class DemoApp extends Application {
         PARITY("Parity"),
         TIME_TUNNEL("Time Tunnel"),
         WEST("West"),
+        DIFFUSION("Diffusion"),
         GENETIC_CA("Genetic CA");
 
         private final String label;
@@ -80,8 +82,8 @@ public class DemoApp extends Application {
     /** Maps LUT integer codes to RGB the same way the old GeneticCADisplayer did. */
     private static final ColorMap IDENTITY_RGB = new ColorMap(0, 1) {
         @Override
-        public int convertValue(int value) {
-            return value & 0xFFFFFF;
+        public int convertValue(double value) {
+            return ((int) value) & 0xFFFFFF;
         }
     };
 
@@ -390,6 +392,15 @@ public class DemoApp extends Application {
                 yield new Created(
                         new West(size, size, setup),
                         new CanvasExporter(size, size, new GrayLevelColorMap(0, 1)));
+            }
+            case DIFFUSION -> {
+                Setup setup = new Setup(
+                        BoundaryFactory.BoundaryType.PERIODIC,
+                        NeighborhoodFactory.NeighborhoodType.VONNEUMANN,
+                        size, size);
+                yield new Created(
+                        new Diffusion(size, size, setup),
+                        new CanvasExporter(size, size, new JetColorMap(0, 1)));
             }
             case GENETIC_CA -> {
                 Setup setup = new Setup(

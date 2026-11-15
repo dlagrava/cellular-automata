@@ -40,7 +40,7 @@ public class Setup {
                 boundary = BoundaryFactory.generatePeriodicBoundary(prototype);
                 break;
             case FIXED:
-                boundary = BoundaryFactory.generateFixedBoundary(prototype, (int) parameters[0]);
+                boundary = BoundaryFactory.generateFixedBoundary(prototype, parameters[0]);
                 break;
             case REFLEXIVE:
                 boundary = BoundaryFactory.generateReflexiveBoundary(prototype);
@@ -104,6 +104,10 @@ public class Setup {
 
 
     public void computeBorders(int[][] ca) {
+        boundary.computeBorders(ca);
+    }
+
+    public void computeBorders(double[][] ca) {
         boundary.computeBorders(ca);
     }
 

@@ -33,6 +33,17 @@ public class CanvasExporter implements IExporter {
         }
     }
 
+    @Override
+    public void writeDoubleValues(double[][] values) {
+        PixelWriter pixels = image.getPixelWriter();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int rgb = colorMap.convertValue(values[x][y]);
+                pixels.setArgb(x, y, 0xFF000000 | rgb);
+            }
+        }
+    }
+
     public WritableImage getImage() {
         return image;
     }
