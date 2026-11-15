@@ -8,10 +8,10 @@ package cellularautomata.core;
  */
 public class FixedBoundary implements IBoundary {
 
-    private int value;
+    private double value;
     private int width;
 
-    public FixedBoundary(INeighborhood neighborhood, int value) {
+    public FixedBoundary(INeighborhood neighborhood, double value) {
         this.value = value;
         width = neighborhood.getRadius();
     }
@@ -28,6 +28,24 @@ public class FixedBoundary implements IBoundary {
     public void computeBorders(int[][] ca) {
         int sizeX = ca.length;
         int sizeY = ca[0].length;
+        int stored = (int) value;
+
+        for (int iL = 0; iL < width; iL++) {
+            for (int iX = 0; iX < sizeX; iX++) {
+                ca[iX][iL] = stored;
+                ca[iX][sizeY - 1 - iL] = stored;
+            }
+            for (int iY = 0; iY < sizeY; iY++) {
+                ca[iL][iY] = stored;
+                ca[sizeX - 1 - iL][iY] = stored;
+            }
+
+        }
+    }
+
+    public void computeBorders(double[][] ca) {
+        int sizeX = ca.length;
+        int sizeY = ca[0].length;
 
         for (int iL = 0; iL < width; iL++) {
             for (int iX = 0; iX < sizeX; iX++) {
@@ -38,7 +56,6 @@ public class FixedBoundary implements IBoundary {
                 ca[iL][iY] = value;
                 ca[sizeX - 1 - iL][iY] = value;
             }
-
         }
     }
 
@@ -48,6 +65,15 @@ public class FixedBoundary implements IBoundary {
      * @param value
      */
     public void setValue(int value) {
+        setValue((double) value);
+    }
+
+    /**
+     * Change the value on the boundary
+     *
+     * @param value
+     */
+    public void setValue(double value) {
         this.value = value;
     }
 

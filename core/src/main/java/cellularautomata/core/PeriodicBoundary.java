@@ -38,7 +38,26 @@ public class PeriodicBoundary implements IBoundary {
 
     }
 
+    public void computeBorders(double[][] ca) {
+        int sizeX = ca.length;
+        int sizeY = ca[0].length;
+        for (int iL = 0; iL < width; iL++) {
+            for (int iX = 0; iX < sizeX; iX++) {
+                ca[iX][iL] = ca[iX][sizeY - iL - 2];
+                ca[iX][sizeY - 1 - iL] = ca[iX][iL + 1];
+            }
+            for (int iY = 0; iY < sizeY; iY++) {
+                ca[iL][iY] = ca[sizeX - iL - 2][iY];
+                ca[sizeX - 1 - iL][iY] = ca[iL + 1][iY];
+            }
+        }
+    }
+
     public void setValue(int value) {
+        setValue((double) value);
+    }
+
+    public void setValue(double value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -15,8 +15,12 @@ public class GrayLevelColorMap extends ColorMap {
 
 
     @Override
-    public int convertValue(int value) {
-        int greyValue = levels / (maxValue - minValue) * value;
+    public int convertValue(double value) {
+        double span = maxValue - minValue;
+        if (span <= 0.0) {
+            return 0;
+        }
+        int greyValue = (int) (levels * (value - minValue) / span);
         return greyValue + (greyValue << 8) + (greyValue << 16);
     }
 }

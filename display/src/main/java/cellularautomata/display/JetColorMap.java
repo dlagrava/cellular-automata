@@ -10,14 +10,14 @@ public class JetColorMap extends ColorMap {
     }
 
     @Override
-    public int convertValue(int value) {
+    public int convertValue(double value) {
         if (maxValue > minValue) {
-            double length = (double) maxValue - (double) minValue;
+            double length = maxValue - minValue;
             double interval1 = 1.0 / 8.0;
             double interval2 = 5.0 / 16.0;
             double interval3 = 11.0 / 16.0;
             double interval4 = 14.0 / 16.0;
-            double normalizedValue = (double) value / length;
+            double normalizedValue = (value - minValue) / length;
             int r = 0, g = 0, b = 0;
             if (normalizedValue < interval1) {
                 b = (int) (0xff * (normalizedValue + interval1) / interval1 / 2);

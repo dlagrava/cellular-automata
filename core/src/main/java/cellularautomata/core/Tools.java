@@ -48,6 +48,17 @@ public class Tools {
 
     }
 
+    public static void initializeDisk(double[][] table, double value, int[] center, int radius) {
+        for (int iX = 0; iX < table.length; ++iX) {
+            for (int iY = 0; iY < table[iX].length; ++iY) {
+                if ((iX - center[0]) * (iX - center[0]) + (iY - center[1]) * (iY - center[1]) <= radius * radius) {
+                    table[iX][iY] = value;
+                }
+            }
+        }
+
+    }
+
 
     /**
      * @param table
@@ -111,6 +122,26 @@ public class Tools {
                 .flatMapToInt(Arrays::stream)
                 .max()
                 .orElse(Integer.MIN_VALUE);
+    }
+
+    /**
+     * Return the min value of the 2D array.
+     *
+     * @param values a 2D array
+     * @return the min value, or {@link Double#POSITIVE_INFINITY} if empty
+     */
+    public static double getMin(double[][] values) {
+        return Arrays.stream(values)
+                .flatMapToDouble(Arrays::stream)
+                .min()
+                .orElse(Double.POSITIVE_INFINITY);
+    }
+
+    public static double getMax(double[][] values) {
+        return Arrays.stream(values)
+                .flatMapToDouble(Arrays::stream)
+                .max()
+                .orElse(Double.NEGATIVE_INFINITY);
     }
 
 }
