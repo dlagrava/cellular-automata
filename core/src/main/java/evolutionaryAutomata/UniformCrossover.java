@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package evolutionaryAutomata;
 
 import cellularautomata.core.LookupTable;
@@ -10,27 +5,48 @@ import cellularautomata.core.LookupTable;
 import java.util.Random;
 
 /**
- * @author lagravas
+ * Per-entry uniform crossover: each LUT index is taken from parent1 or parent2
+ * according to a mixing ratio (overridable by a trailing fitness bias).
+ *
+ * @author Daniel Lagrava
  */
 public class UniformCrossover implements ICrossoverEngine {
 
-    public LookupTable applyCrossover(LookupTable parent1, LookupTable parent2, double... parameters) {
+    private final Random rng;
 
-        double mixingRatio = parameters[0];
-        // Pseudo-random number generator
-        Random rng = new Random();
+    public UniformCrossover() {
+        this(new Random());
+    }
+
+    public UniformCrossover(Random rng) {
+        this.rng = rng;
+    }
+
+    @Override
+    public LookupTable applyCrossover(LookupTable parent1, LookupTable parent2, double... parameters) {
+        double mixingRatio = parameters.length > 0 ? parameters[0] : 0.5;
+        // Trailing bias overrides the configured mixing ratio when provided.
+        if (parameters.length > 1) {
+            mixingRatio = clamp01(parameters[parameters.length - 1]);
+        }
         int[] newLookupTable = new int[parent1.getLength()];
-        // for each element in the lookuptable
         for (int i = 0; i < parent1.getLength(); i++) {
-            // we either take the parent2 value
             if (rng.nextDouble() > mixingRatio) {
                 newLookupTable[i] = parent2.getValue(i);
+            } else {
+                newLookupTable[i] = parent1.getValue(i);
             }
-            // or we keep the one of parent1
-            else newLookupTable[i] = parent1.getValue(i);
         }
-
         return new LookupTable(newLookupTable);
     }
 
+    private static double clamp01(double value) {
+        if (value < 0.0) {
+            return 0.0;
+        }
+        if (value > 1.0) {
+            return 1.0;
+        }
+        return value;
+    }
 }

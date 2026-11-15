@@ -1,154 +1,202 @@
-/*
- * No licence
- */
-
 package evolutionaryAutomata;
 
+import cellularautomata.core.IExporter;
 import cellularautomata.core.IntegerCellularAutomata2D;
 import cellularautomata.core.LookupTable;
 import cellularautomata.core.Setup;
-import cellularautomata.core.IExporter;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
+ * Integer CA where every cell carries its own lookup-table genome.
+ *
+ * <p>Fitness accumulates whenever a cell consumes a resource ({@code 1 → 0}).
+ * Every {@code evolutionStep} ticks, cells below mean fitness adopt a crossover
+ * offspring with their fittest neighbor (optional mutation afterward).
+ *
+ * <p>Call {@link #initializeRules} then {@link #selectCrossoverType} before
+ * evolving; {@link #selectMutation} is optional (off by default).
+ *
  * @author Daniel Lagrava
  */
 public class GeneticCellularAutomata extends IntegerCellularAutomata2D {
 
-    private LookupTable[][] lookupTables; // every cell has its own lookuptable
-    private double[][] fitness; // to keep track of the fitness of each cell
+    private final LookupTable[][] lookupTables;
+    private final double[][] fitness;
+    private final boolean showCellValue;
+    private final int evolutionStep;
+    private final Random rng;
 
-    // show the value of a cell (display only)
-    private boolean showCellValue;
-    // make mutations after crossover step?
     private boolean performMutation;
-
-
-    // to keep track of the global time
     private int globalTimer;
-    // the number of steps before a crossover operation
-    private int evolutionStep;
-    // object that computes all kind of statistics
     private Statistics internalStatistics;
-
-    // object charged of the crossover step
     private ICrossoverEngine crossOverEngine;
-
-    // array that contains the crossover parameters
     private double[] crossoverParameters;
+    private MutationEngine mutationEngine;
+    private boolean rulesInitialized;
 
-    // types of rule distributions, crossover and initial 1's
+    /** How the two seed rules are laid out on the grid. */
     public enum RuleDistribution {HORIZONTALSPLIT, VERTICALSPLIT, RANDOM}
 
-    ;
-
+    /** Crossover strategy used during evolution. */
     public enum CrossoverType {UNIFORM, ONEPOINT, TWOPOINT}
 
-    ;
-
+    /** Initial pattern of resource cells ({@code 1}s). */
     public enum StartingPattern {SQUARE, CIRCLE, RANDOM}
 
-    ;
-
+    /**
+     * Construct with a centered square starting pattern.
+     *
+     * @param sizeX         interior width
+     * @param sizeY         interior height
+     * @param setup         neighborhood / boundary setup
+     * @param evolutionStep ticks between crossover generations
+     * @param cellStatus    if true, export LUT×cell; else LUT only
+     */
     public GeneticCellularAutomata(int sizeX, int sizeY, Setup setup, int evolutionStep, boolean cellStatus) {
+        this(sizeX, sizeY, setup, evolutionStep, cellStatus, StartingPattern.SQUARE);
+    }
+
+    /**
+     * @param sizeX         interior width
+     * @param sizeY         interior height
+     * @param setup         neighborhood / boundary setup
+     * @param evolutionStep ticks between crossover generations
+     * @param cellStatus    if true, export LUT×cell; else LUT only
+     * @param pattern       initial placement of {@code 1}s
+     */
+    public GeneticCellularAutomata(int sizeX, int sizeY, Setup setup, int evolutionStep,
+                                   boolean cellStatus, StartingPattern pattern) {
         super(sizeX, sizeY, setup);
-
-        // evolution step marks when we will perform the crossover   
         this.evolutionStep = evolutionStep;
-        // internal counter to see if we approach the crossover step
-        globalTimer = 1;
+        this.globalTimer = 1;
+        this.lookupTables = new LookupTable[realSizeX][realSizeY];
+        this.fitness = new double[realSizeX][realSizeY];
+        this.showCellValue = cellStatus;
+        this.rng = new Random();
+        this.performMutation = false;
+        this.rulesInitialized = false;
+        initializePattern(pattern);
+    }
 
-        // allocate the lookup tables
-        lookupTables = new LookupTable[realSizeX][realSizeY];
-        // Initialise the fitness table
-        fitness = new double[realSizeX][realSizeY];
-
-        showCellValue = cellStatus;
-
-        // Initialize a centered square to start evolution
-        for (int iX = sizeX / 2 - sizeX / 7; iX < sizeX / 2 + sizeX / 7; iX++) {
-            for (int iY = sizeY / 2 - sizeY / 7; iY < sizeY / 2 + sizeY / 7; iY++) {
-                setValue(iX, iY, 1);
+    private void initializePattern(StartingPattern pattern) {
+        int cx = sizeX / 2;
+        int cy = sizeY / 2;
+        int radius = Math.max(1, sizeX / 7);
+        switch (pattern) {
+            case SQUARE -> {
+                for (int iX = cx - radius; iX < cx + radius; iX++) {
+                    for (int iY = cy - radius; iY < cy + radius; iY++) {
+                        setValue(iX, iY, 1);
+                    }
+                }
             }
+            case CIRCLE -> {
+                int r2 = radius * radius;
+                for (int iX = cx - radius; iX <= cx + radius; iX++) {
+                    for (int iY = cy - radius; iY <= cy + radius; iY++) {
+                        int dx = iX - cx;
+                        int dy = iY - cy;
+                        if (dx * dx + dy * dy <= r2) {
+                            setValue(iX, iY, 1);
+                        }
+                    }
+                }
+            }
+            case RANDOM -> {
+                double density = 0.08;
+                for (int iX = 0; iX < sizeX; iX++) {
+                    for (int iY = 0; iY < sizeY; iY++) {
+                        if (rng.nextDouble() < density) {
+                            setValue(iX, iY, 1);
+                        }
+                    }
+                }
+            }
+            default -> throw new IllegalArgumentException("Unknown starting pattern: " + pattern);
         }
-
     }
 
     @Override
     public int applyRule(int x, int y, int[] values) {
         int LUTIndex = 0;
         for (int iK = 0; iK < values.length; iK++) {
-            int powerOfTwo = 1 << iK; //2^iK
+            int powerOfTwo = 1 << iK;
             LUTIndex += powerOfTwo * values[iK];
         }
-
         return lookupTables[x][y].getValue(LUTIndex);
     }
 
     @Override
     public void postProcessing() {
-        // computation of the fitness of every cell
+        ensureReady();
         computeFitness();
         if (globalTimer % evolutionStep == 0) {
-            Double meanFitness = internalStatistics.meanFitness(fitness, xStart, xEnd, xStart, xEnd);
+            Double meanFitness = internalStatistics.meanFitness(fitness, xStart, xEnd, yStart, yEnd);
             for (int iX = xStart; iX < xEnd; iX++) {
                 for (int iY = yStart; iY < yEnd; iY++) {
-                    // choose unfit individuals to make crossover
                     if (fitness[iX][iY] < meanFitness) {
-                        // for each cell choose the fittest neighbor
                         int[] fittest = chooseFittestNeighbor(iX, iY);
-                        // avoid a crossover with itself
-                        if (!(fittest[0] == iX && fittest[1] == iY)) {
-
-                            // test if the chosen neighbor does not have the same rule
-                            if (lookupTables[iX][iY].equals(lookupTables[fittest[0]][fittest[1]]))
-                                continue;
-
-                            // apply crossover using the crossover engine
-                            double biais = Math.abs(fitness[iX][iY] - fitness[fittest[0]][fittest[1]]) / (double) (evolutionStep / 2);
-                            lookupTables[iX][iY] = crossOverEngine.applyCrossover(lookupTables[iX][iY], lookupTables[fittest[0]][fittest[1]], crossoverParameters);
+                        if (fittest[0] == iX && fittest[1] == iY) {
+                            continue;
+                        }
+                        if (lookupTables[iX][iY].equals(lookupTables[fittest[0]][fittest[1]])) {
+                            continue;
+                        }
+                        double bias = Math.abs(fitness[iX][iY] - fitness[fittest[0]][fittest[1]])
+                                / (double) (evolutionStep / 2);
+                        lookupTables[iX][iY] = crossOverEngine.applyCrossover(
+                                lookupTables[iX][iY],
+                                lookupTables[fittest[0]][fittest[1]],
+                                crossoverParametersWithBias(bias));
+                        if (performMutation) {
+                            mutationEngine.lookUpTableMutation(lookupTables[iX][iY]);
                         }
                     }
                 }
             }
-            // if crossover then we reset the fitness
             resetFitness();
             internalStatistics.rulesHistogram(lookupTables, xStart, xEnd, yStart, yEnd);
         }
     }
 
-    /**
-     *
-     */
+    private double[] crossoverParametersWithBias(double bias) {
+        if (crossoverParameters == null || crossoverParameters.length == 0) {
+            return new double[]{bias};
+        }
+        double[] params = Arrays.copyOf(crossoverParameters, crossoverParameters.length + 1);
+        params[params.length - 1] = bias;
+        return params;
+    }
+
+    private void ensureReady() {
+        if (!rulesInitialized) {
+            throw new IllegalStateException("Call initializeRules before evolving");
+        }
+        if (crossOverEngine == null) {
+            throw new IllegalStateException("Call selectCrossoverType before evolving");
+        }
+    }
+
     private void computeFitness() {
-        // we compute the fitness for each cell
         for (int iX = xStart; iX < xEnd; iX++) {
             for (int iY = yStart; iY < yEnd; iY++) {
-                // we comparte the old value
                 int oldValue = temporaryArrays[iX][iY][0];
-                // and the new value of the CA
                 int newValue = getCell(iX, iY);
-                // we say that if a resource is consumed the fitness is better
                 if (oldValue == 1 && newValue == 0) {
                     fitness[iX][iY] += 1.0;
                 }
             }
-
         }
-
     }
 
-    /**
-     *
-     */
     private void resetFitness() {
         for (int iX = xStart; iX < xEnd; iX++) {
             for (int iY = yStart; iY < yEnd; iY++) {
                 fitness[iX][iY] = 0.0;
             }
         }
-
     }
 
     @Override
@@ -158,29 +206,22 @@ public class GeneticCellularAutomata extends IntegerCellularAutomata2D {
     }
 
     /**
-     * Choose the neighbor that has the best fitness
-     *
-     * @param x
-     * @param y
-     * @return
+     * Neighbor with the highest fitness (may be {@code (x,y)} if it is best).
      */
     private int[] chooseFittestNeighbor(int x, int y) {
         int[][] neighbors = setup.getNeighborIndices(x, y);
         int chosen = 0;
         for (int i = 0; i < neighbors.length; i++) {
-            if (fitness[neighbors[i][0]][neighbors[i][1]] > fitness[neighbors[chosen][0]][neighbors[chosen][1]])
+            if (fitness[neighbors[i][0]][neighbors[i][1]]
+                    > fitness[neighbors[chosen][0]][neighbors[chosen][1]]) {
                 chosen = i;
+            }
         }
-        int[] result = {neighbors[chosen][0], neighbors[chosen][1]};
-        return result;
+        return new int[]{neighbors[chosen][0], neighbors[chosen][1]};
     }
 
     /**
-     * Instead of passing the values of the cells, we are going to export the values
-     * of the conversion of the LUT into a 32-bits integer value. This allows to visually
-     * verify the generation of new different rules.
-     *
-     * @param writer
+     * Export LUT-as-int (optionally multiplied by cell value) for visualization.
      */
     @Override
     public void exportValues(IExporter writer) {
@@ -199,86 +240,108 @@ public class GeneticCellularAutomata extends IntegerCellularAutomata2D {
     }
 
     /**
-     * Initialization method for the crossover. MUST be called before using the CA.
+     * Select the crossover engine. Must be called before evolving.
      *
-     * @param type
-     * @param parameters several real valued parameters that depend on the crossover type.
+     * @param type       crossover kind
+     * @param parameters e.g. mixing ratio for {@link CrossoverType#UNIFORM}
      */
-
     public void selectCrossoverType(CrossoverType type, double... parameters) {
         switch (type) {
-            case UNIFORM:
-                // if uniform crossover selected we need the probability
-                crossoverParameters = new double[1];
-                crossoverParameters[0] = parameters[0];
-                crossOverEngine = new UniformCrossover();
-                break;
-            case ONEPOINT:
-                crossOverEngine = new OnePointCrossover();
-                break;
-            case TWOPOINT:
-                throw new UnsupportedOperationException("Two-point crossover is not implemented");
-            default:
-                throw new IllegalArgumentException("Unknown crossover type: " + type);
-
+            case UNIFORM -> {
+                crossoverParameters = new double[]{parameters[0]};
+                crossOverEngine = new UniformCrossover(rng);
+            }
+            case ONEPOINT -> {
+                crossoverParameters = null;
+                crossOverEngine = new OnePointCrossover(rng);
+            }
+            case TWOPOINT -> {
+                crossoverParameters = null;
+                crossOverEngine = new TwoPointCrossover(rng);
+            }
+            default -> throw new IllegalArgumentException("Unknown crossover type: " + type);
         }
     }
 
     /**
-     * Initialize the rules according to the rule distribution type selected
+     * Enable post-crossover LUT mutation with the given probability (default off).
+     * Call after {@link #initializeRules}.
      *
-     * @param type
-     * @param rules
+     * @param probability mutation probability in {@code [0, 1]}
+     */
+    public void selectMutation(double probability) {
+        if (!rulesInitialized) {
+            throw new IllegalStateException("Call initializeRules before selectMutation");
+        }
+        if (probability < 0.0 || probability > 1.0) {
+            throw new IllegalArgumentException("mutation probability must be in [0, 1]");
+        }
+        int tableSize = lookupTables[xStart][yStart].getLength();
+        mutationEngine = new MutationEngine(probability, tableSize, rng);
+        performMutation = probability > 0.0;
+    }
+
+    /**
+     * Place the two seed rules according to {@code type}. Must be called before evolving.
      */
     public void initializeRules(RuleDistribution type, LookupTable rule1, LookupTable rule2) {
-        // start the statistics object
         internalStatistics = new Statistics(rule1, rule2);
-        // choose the layout of rules
         switch (type) {
-            // one rule above the other
-            case HORIZONTALSPLIT:
+            case HORIZONTALSPLIT -> {
                 for (int iX = 0; iX < realSizeX; iX++) {
                     for (int iY = 0; iY < realSizeY; iY++) {
-                        if (iX < realSizeX / 2) lookupTables[iX][iY] = rule1.clone();
-                        else lookupTables[iX][iY] = rule2.clone();
+                        if (iX < realSizeX / 2) {
+                            lookupTables[iX][iY] = rule1.clone();
+                        } else {
+                            lookupTables[iX][iY] = rule2.clone();
+                        }
                     }
                 }
-                break;
-            // one rule to the left and the other to the right
-            case VERTICALSPLIT:
+            }
+            case VERTICALSPLIT -> {
                 for (int iX = 0; iX < realSizeX; iX++) {
                     for (int iY = 0; iY < realSizeY; iY++) {
-                        if (iY < realSizeY / 2) lookupTables[iX][iY] = rule1.clone();
-                        else lookupTables[iX][iY] = rule2.clone();
+                        if (iY < realSizeY / 2) {
+                            lookupTables[iX][iY] = rule1.clone();
+                        } else {
+                            lookupTables[iX][iY] = rule2.clone();
+                        }
                     }
                 }
-                break;
-            // random distribution of the rules
-            case RANDOM:
-                Random rng = new Random();
+            }
+            case RANDOM -> {
                 for (int iX = 0; iX < realSizeX; iX++) {
                     for (int iY = 0; iY < realSizeY; iY++) {
-                        if (rng.nextDouble() > 0.5) lookupTables[iX][iY] = rule1.clone();
-                        else lookupTables[iX][iY] = rule2.clone();
+                        if (rng.nextDouble() > 0.5) {
+                            lookupTables[iX][iY] = rule1.clone();
+                        } else {
+                            lookupTables[iX][iY] = rule2.clone();
+                        }
                     }
                 }
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown rule distribution: " + type);
-
+            }
+            default -> throw new IllegalArgumentException("Unknown rule distribution: " + type);
         }
+        rulesInitialized = true;
     }
 
     /**
-     * Use the internal Statistics object to return the original + mutated rules on
-     * the system
+     * @return {@code {countRule1, countRule2}} for cells still on the seed LUTs
      */
-    public void countOriginalRules() {
-        internalStatistics.countOriginalRules(lookupTables, xStart, xEnd, xStart, xEnd);
+    public int[] countOriginalRules() {
+        if (!rulesInitialized) {
+            throw new IllegalStateException("Call initializeRules before countOriginalRules");
+        }
+        return internalStatistics.countOriginalRules(lookupTables, xStart, xEnd, yStart, yEnd);
     }
 
+    /**
+     * Persist the last rule histogram built during a crossover generation.
+     */
     public void writeRulesStatistics(String fileName) {
+        if (internalStatistics == null) {
+            throw new IllegalStateException("Call initializeRules before writeRulesStatistics");
+        }
         internalStatistics.writeHistogram(fileName);
     }
-
 }

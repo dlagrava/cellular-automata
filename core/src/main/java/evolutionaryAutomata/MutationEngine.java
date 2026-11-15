@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package evolutionaryAutomata;
 
 import cellularautomata.core.LookupTable;
@@ -10,44 +5,57 @@ import cellularautomata.core.LookupTable;
 import java.util.Random;
 
 /**
- * @author lagravas
+ * Probabilistic single-bit flip mutation on a lookup table.
+ *
+ * @author Daniel Lagrava
  */
 public class MutationEngine {
 
-    // probability to have a mutation
-    private double mutationProbability;
-    // lookuptable size
-    private int tableSize;
-    // the random number generator
-    private Random rng;
+    private final double mutationProbability;
+    private final int tableSize;
+    private final Random rng;
 
+    /**
+     * @param mutationProbability probability in {@code [0, 1]} that a LUT mutates
+     * @param tableSize           number of LUT entries (flip index range)
+     */
     public MutationEngine(double mutationProbability, int tableSize) {
+        this(mutationProbability, tableSize, new Random());
+    }
+
+    /**
+     * @param mutationProbability probability in {@code [0, 1]} that a LUT mutates
+     * @param tableSize           number of LUT entries (flip index range)
+     * @param rng                 shared random source
+     */
+    public MutationEngine(double mutationProbability, int tableSize, Random rng) {
         this.mutationProbability = mutationProbability;
         this.tableSize = tableSize;
-        rng = new Random();
+        this.rng = rng;
     }
 
     /**
-     * Ask whether an individual will mutate or not
+     * Decide whether mutation occurs and which table index to flip.
      *
-     * @return an integer representing the individual component to mutate or -1 if no mutation
-     * shall take place.
+     * @return index to mutate, or {@code -1} if no mutation
      */
     public int isGoingToMutate() {
-        if (rng.nextDouble() > mutationProbability) {
+        if (rng.nextDouble() < mutationProbability) {
             return rng.nextInt(tableSize);
-        } else {
-            return -1;
         }
+        return -1;
     }
 
     /**
-     * Each individual will have a certain number of mutations.
+     * Flip one random LUT entry (0↔1) with {@link #mutationProbability}.
      *
-     * @param lut
+     * @param lut genome to mutate in place
      */
     public void lookUpTableMutation(LookupTable lut) {
-
+        int site = isGoingToMutate();
+        if (site < 0) {
+            return;
+        }
+        lut.setNewValue(site, 1 - lut.getValue(site));
     }
-
 }
