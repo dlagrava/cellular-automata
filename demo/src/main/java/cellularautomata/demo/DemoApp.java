@@ -202,7 +202,7 @@ public class DemoApp extends Application {
         resetCa(DEFAULT_SIZE);
         startLoop();
 
-        stage.setScene(new Scene(root, VIEW_SIZE + 160, VIEW_SIZE + 80));
+        stage.setScene(new Scene(root, VIEW_SIZE + 320, VIEW_SIZE + 100));
         stage.setOnCloseRequest(e -> shutdown());
         stage.show();
     }
