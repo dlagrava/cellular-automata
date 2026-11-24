@@ -1,3 +1,3 @@
 rootProject.name = "cellular-automata"
 
-include("core", "display", "examples", "demo")
+include("core", "display", "examples", "demo", "cli")
