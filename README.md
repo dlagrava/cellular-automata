@@ -1,20 +1,26 @@
 # cellular-automata
 
-Java 21 library for building and evolving 2D cellular automata, plus a JavaFX demo that renders them live.
+Java 21 library for building and evolving 2D cellular automata, plus a JavaFX demo and a headless CLI batch runner.
 
-Rules live in a UI-free `core` module. Display goes through `IExporter` (integer grids → pixels or files), so the same automata can drive Swing, JavaFX, or other front ends.
+Rules live in a UI-free `core` module. Display goes through `IExporter` (integer grids → pixels or files), so the same automata can drive Swing, JavaFX, or other front ends. Batch runs use `IStatsCollector` for CSV / frame output without a UI.
 
 ## Modules
 
 ```text
 cellular-automata/
-  core/   # publishable library (no JavaFX)
-  demo/   # JavaFX app (depends on core)
+  core/      # publishable library (no JavaFX)
+  display/   # ColorMap, ImageWriter
+  examples/  # concrete rules
+  cli/       # headless batch runner
+  demo/      # JavaFX app
 ```
 
 | Module | Role |
 |--------|------|
-| **core** | Setup, neighborhoods, boundaries, lookup tables, example rules, evolutionary CA engines, `IExporter` / `ColorMap` / `ImageWriter` |
+| **core** | Setup, neighborhoods, boundaries, lookup tables, evolutionary CA engines, `IExporter`, `IStatsCollector` |
+| **display** | `ColorMap`, `ImageWriter` |
+| **examples** | Concrete rules (`GameOfLife`, `HPP`, …) |
+| **cli** | Headless batch: run a CA for N steps with pluggable stats collectors |
 | **demo** | JavaFX shell: pick a CA, play / pause / step / reset, optional HPP side panel |
 
 ### Genetic CA (`evolutionaryAutomata`)
@@ -41,6 +47,14 @@ genetic.selectCrossoverType(CrossoverType.UNIFORM, 0.5); // or ONEPOINT / TWOPOI
 ```
 
 The window lists Game of Life, Falling Sand, Langton’s Ant, HPP, Parity, Time Tunnel, West, and Genetic CA. Use Play / Pause / Step / Reset, size, and speed. Selecting HPP shows reverse, add-particle, and iteration controls.
+
+## Batch / CLI
+
+Headless runs (no JavaFX): pick a CA, step count, and collectors (`density`, `histogram`, `genetic-rules`). Optional `--frames` writes GIFs; `--out` writes CSV (stdout if omitted).
+
+```bash
+./gradlew :cli:run --args='--ca game-of-life --size 200 --steps 500 --collect density,histogram --out out/run.csv'
+```
 
 Build the library jar alone:
 
