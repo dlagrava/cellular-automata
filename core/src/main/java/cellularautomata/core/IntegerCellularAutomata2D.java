@@ -146,18 +146,49 @@ public abstract class IntegerCellularAutomata2D implements ICellularAutomata {
      * @param writer a class implementing the IExporter interface
      */
     public void exportValues(IExporter writer) {
-        // table that contains the values to be exported
+        writer.writeIntegerValues(copyValues());
+    }
+
+    /**
+     * Snapshot of logical interior cells {@code [0, sizeX) × [0, sizeY)}.
+     *
+     * @return a new matrix; does not include boundary padding
+     */
+    public int[][] copyValues() {
         int[][] values = new int[sizeX][sizeY];
-        // we only need the internal cells not the boundary-added cells
         int width = setup.getBoundaryWidth();
-        // loop to retrieve the values
         for (int iX = width; iX < realSizeX - width; iX++) {
             for (int iY = width; iY < realSizeY - width; iY++) {
                 values[iX - width][iY - width] = cells[iX][iY];
             }
         }
-        // send the values to the writer
-        writer.writeIntegerValues(values);
+        return values;
+    }
+
+    /**
+     * Replace logical interior cells from {@code values}.
+     * Requires {@code values.length == sizeX} and each row length {@code sizeY}.
+     *
+     * @param values row-major logical grid
+     */
+    public void loadValues(int[][] values) {
+        if (values == null) {
+            throw new IllegalArgumentException("values is null");
+        }
+        if (values.length != sizeX) {
+            throw new IllegalArgumentException(
+                    "expected " + sizeX + " rows, got " + values.length);
+        }
+        for (int x = 0; x < sizeX; x++) {
+            if (values[x] == null || values[x].length != sizeY) {
+                int len = values[x] == null ? -1 : values[x].length;
+                throw new IllegalArgumentException(
+                        "row " + x + ": expected " + sizeY + " cols, got " + len);
+            }
+            for (int y = 0; y < sizeY; y++) {
+                setValue(x, y, values[x][y]);
+            }
+        }
     }
 
     /**
