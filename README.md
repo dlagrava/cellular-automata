@@ -1,6 +1,11 @@
 # cellular-automata
 
+[![CI](https://github.com/dlagrava/cellular-automata/actions/workflows/ci.yml/badge.svg)](https://github.com/dlagrava/cellular-automata/actions/workflows/ci.yml)
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
+
 Java 21 library for building and evolving 2D cellular automata, plus a JavaFX demo and a headless CLI batch runner.
+
+Licensed under the [GNU GPLv3](LICENSE).
 
 Rules live in a UI-free `core` module. Display goes through `IExporter` (integer grids → pixels or files), so the same automata can drive Swing, JavaFX, or other front ends. Batch runs use `IStatsCollector` for CSV / frame output without a UI.
 
@@ -64,10 +69,11 @@ Build the library jar alone:
 
 ## Add a cellular automaton
 
-1. Subclass `IntegerCellularAutomata2D` in `core` (package `cellularautomata.examples` or your own).
+1. Subclass `IntegerCellularAutomata2D` in `examples` (package `cellularautomata.examples`).
 2. Construct a `Setup` with the boundary and neighborhood you need.
 3. Implement `applyRule(int x, int y, int[] values)` — `values[0]` is the cell; the rest are neighbors in neighborhood order.
 4. Export state with `exportValues(IExporter)` (demo uses `CanvasExporter`; `ImageWriter` writes files).
+5. Wire into `demo` via `DemoApp`’s picker + factory and a `ColorMap` from `display`.
 
 Minimal sketch:
 
@@ -85,5 +91,3 @@ public class MyRule extends IntegerCellularAutomata2D {
     }
 }
 ```
-
-Wire it into the demo by adding an entry in `DemoApp`’s example picker and a factory branch that builds your rule + a `ColorMap`.
