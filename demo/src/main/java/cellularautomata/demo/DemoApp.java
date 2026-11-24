@@ -9,6 +9,7 @@ import cellularautomata.core.Setup;
 import cellularautomata.display.ColorMap;
 import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.HotColorMap;
+import cellularautomata.display.IndexedColorMap;
 import cellularautomata.display.JetColorMap;
 import cellularautomata.examples.Diffusion;
 import cellularautomata.examples.FallingSand;
@@ -86,6 +87,10 @@ public class DemoApp extends Application {
             return ((int) value) & 0xFFFFFF;
         }
     };
+
+    /** void=cream, sand=brown, glass=dark gray */
+    private static final ColorMap FALLING_SAND_COLORS = new IndexedColorMap(
+            0xF5F0E6, 0xC4A35A, 0x2E2E2E);
 
     private final AtomicBoolean playing = new AtomicBoolean(false);
     private final AtomicBoolean pendingReverse = new AtomicBoolean(false);
@@ -345,7 +350,7 @@ public class DemoApp extends Application {
                         size, size);
                 yield new Created(
                         new FallingSand(size, size, setup),
-                        new CanvasExporter(size, size, new JetColorMap(0, 2)));
+                        new CanvasExporter(size, size, FALLING_SAND_COLORS));
             }
             case LANGTONS_ANT -> {
                 Setup setup = new Setup(

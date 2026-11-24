@@ -9,6 +9,7 @@ import cellularautomata.core.Setup;
 import cellularautomata.display.ColorMap;
 import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.HotColorMap;
+import cellularautomata.display.IndexedColorMap;
 import cellularautomata.display.JetColorMap;
 import cellularautomata.examples.Diffusion;
 import cellularautomata.examples.FallingSand;
@@ -131,7 +132,7 @@ public final class ExampleFactory {
     public static ColorMap colorMap(String caId) {
         return switch (caId) {
             case "game-of-life", "west" -> new GrayLevelColorMap(0, 1);
-            case "falling-sand" -> new JetColorMap(0, 2);
+            case "falling-sand" -> new IndexedColorMap(0xF5F0E6, 0xC4A35A, 0x2E2E2E);
             case "langtons-ant" -> new HotColorMap(0, LANGTON_ANTS);
             case "hpp" -> new HotColorMap(0, HPP.NORTH + HPP.SOUTH + HPP.EAST + HPP.WEST);
             case "parity" -> new HotColorMap(0, 1);
