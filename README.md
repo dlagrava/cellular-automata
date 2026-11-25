@@ -55,6 +55,8 @@ genetic.selectCrossoverType(CrossoverType.UNIFORM, 0.5); // or ONEPOINT / TWOPOI
 ./gradlew :demo:run
 ```
 
+![Demo GUI](docs/media/demo-gui.gif)
+
 The window lists Game of Life, Falling Sand, Forest Fire, Langton’s Ant, HPP, Parity, Time Tunnel, West, Diffusion, Height-Field Water, and Genetic CA. Use Play / Pause / Step / Reset, size, and speed. Selecting HPP shows reverse, add-particle, and iteration controls.
 
 ## Batch / CLI
