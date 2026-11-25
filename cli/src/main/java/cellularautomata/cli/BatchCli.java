@@ -38,6 +38,7 @@ public final class BatchCli {
             "west",
             "diffusion",
             "height-field-water",
+            "cyclic",
             "genetic-ca"
     );
 

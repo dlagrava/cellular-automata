@@ -57,7 +57,18 @@ genetic.selectCrossoverType(CrossoverType.UNIFORM, 0.5); // or ONEPOINT / TWOPOI
 
 ![Demo GUI](docs/media/demo-gui.gif)
 
-The window lists Game of Life, Falling Sand, Forest Fire, Langton’s Ant, HPP, Parity, Time Tunnel, West, Diffusion, Height-Field Water, and Genetic CA. Use Play / Pause / Step / Reset, size, and speed. Selecting HPP shows reverse, add-particle, and iteration controls.
+The window lists Game of Life, Falling Sand, Forest Fire, Langton’s Ant, HPP, Parity, Time Tunnel, West, Diffusion, Height-Field Water, Cyclic, and Genetic CA. Use Play / Pause / Step / Reset, size, and speed. Selecting HPP shows reverse, add-particle, and iteration controls.
+
+### Cyclic
+
+Griffeath cyclic CA: states `0 .. n−1` (demo/CLI default **n = 20**), random start. A cell at `s` becomes `(s + 1) mod n` when at least `threshold` neighbors already hold that successor (default threshold `1`). Demo and CLI use PERIODIC + Moore. Construct with custom `states` / `threshold` if needed:
+
+```java
+new Cyclic(size, size, setup);                 // n=20, threshold=1
+new Cyclic(size, size, setup, states, threshold);
+```
+
+CLI id: `cyclic`.
 
 ## Batch / CLI
 
