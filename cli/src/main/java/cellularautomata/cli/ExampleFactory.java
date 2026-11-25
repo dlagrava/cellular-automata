@@ -13,6 +13,7 @@ import cellularautomata.display.IndexedColorMap;
 import cellularautomata.display.JetColorMap;
 import cellularautomata.examples.Diffusion;
 import cellularautomata.examples.FallingSand;
+import cellularautomata.examples.ForestFire;
 import cellularautomata.examples.GameOfLife;
 import cellularautomata.examples.HPP;
 import cellularautomata.examples.LangtonsAnt;
@@ -63,6 +64,13 @@ public final class ExampleFactory {
                         NeighborhoodFactory.NeighborhoodType.MARGOLUS,
                         size, size);
                 yield new FallingSand(size, size, setup);
+            }
+            case "forest-fire" -> {
+                Setup setup = new Setup(
+                        BoundaryFactory.BoundaryType.PERIODIC,
+                        NeighborhoodFactory.NeighborhoodType.VONNEUMANN,
+                        size, size);
+                yield new ForestFire(size, size, setup);
             }
             case "langtons-ant" -> {
                 Setup setup = new Setup(
@@ -133,6 +141,7 @@ public final class ExampleFactory {
         return switch (caId) {
             case "game-of-life", "west" -> new GrayLevelColorMap(0, 1);
             case "falling-sand" -> new IndexedColorMap(0xF5F0E6, 0xC4A35A, 0x2E2E2E);
+            case "forest-fire" -> new IndexedColorMap(0x2B2118, 0x2E7D32, 0xE65100);
             case "langtons-ant" -> new HotColorMap(0, LANGTON_ANTS);
             case "hpp" -> new HotColorMap(0, HPP.NORTH + HPP.SOUTH + HPP.EAST + HPP.WEST);
             case "parity" -> new HotColorMap(0, 1);

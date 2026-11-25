@@ -9,9 +9,9 @@ Licensed under the [GNU GPLv3](LICENSE).
 
 Rules live in a UI-free `core` module. Display goes through `IExporter` (integer grids → pixels or files), so the same automata can drive Swing, JavaFX, or other front ends. Batch runs use `IStatsCollector` for CSV / frame output without a UI.
 
-| Falling Sand | Diffusion | Time Tunnel |
-|:------------:|:---------:|:-----------:|
-| ![Falling Sand](docs/media/falling-sand.gif) | ![Diffusion](docs/media/diffusion.gif) | ![Time Tunnel](docs/media/time-tunnel.gif) |
+| Falling Sand | Forest Fire | Time Tunnel |
+|:------------:|:-----------:|:-----------:|
+| ![Falling Sand](docs/media/falling-sand.gif) | ![Forest Fire](docs/media/forest-fire.gif) | ![Time Tunnel](docs/media/time-tunnel.gif) |
 
 ## Modules
 

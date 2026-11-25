@@ -30,6 +30,7 @@ public final class BatchCli {
     private static final Set<String> KNOWN_CA = Set.of(
             "game-of-life",
             "falling-sand",
+            "forest-fire",
             "langtons-ant",
             "hpp",
             "parity",

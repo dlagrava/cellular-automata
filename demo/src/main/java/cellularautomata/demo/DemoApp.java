@@ -13,6 +13,7 @@ import cellularautomata.display.IndexedColorMap;
 import cellularautomata.display.JetColorMap;
 import cellularautomata.examples.Diffusion;
 import cellularautomata.examples.FallingSand;
+import cellularautomata.examples.ForestFire;
 import cellularautomata.examples.GameOfLife;
 import cellularautomata.examples.HPP;
 import cellularautomata.examples.LangtonsAnt;
@@ -60,6 +61,7 @@ public class DemoApp extends Application {
     private enum Example {
         GAME_OF_LIFE("Game of Life"),
         FALLING_SAND("Falling Sand"),
+        FOREST_FIRE("Forest Fire"),
         LANGTONS_ANT("Langton's Ant"),
         HPP("HPP"),
         PARITY("Parity"),
@@ -91,6 +93,10 @@ public class DemoApp extends Application {
     /** void=cream, sand=brown, glass=dark gray */
     private static final ColorMap FALLING_SAND_COLORS = new IndexedColorMap(
             0xF5F0E6, 0xC4A35A, 0x2E2E2E);
+
+    /** empty=soil, tree=green, burning=orange */
+    private static final ColorMap FOREST_FIRE_COLORS = new IndexedColorMap(
+            0x2B2118, 0x2E7D32, 0xE65100);
 
     private final AtomicBoolean playing = new AtomicBoolean(false);
     private final AtomicBoolean pendingReverse = new AtomicBoolean(false);
@@ -351,6 +357,15 @@ public class DemoApp extends Application {
                 yield new Created(
                         new FallingSand(size, size, setup),
                         new CanvasExporter(size, size, FALLING_SAND_COLORS));
+            }
+            case FOREST_FIRE -> {
+                Setup setup = new Setup(
+                        BoundaryFactory.BoundaryType.PERIODIC,
+                        NeighborhoodFactory.NeighborhoodType.VONNEUMANN,
+                        size, size);
+                yield new Created(
+                        new ForestFire(size, size, setup),
+                        new CanvasExporter(size, size, FOREST_FIRE_COLORS));
             }
             case LANGTONS_ANT -> {
                 Setup setup = new Setup(
