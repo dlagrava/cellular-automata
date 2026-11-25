@@ -1,7 +1,7 @@
 # cellular-automata
 
-[![CI](https://github.com/dlagrava/cellular-automata/actions/workflows/ci.yml/badge.svg)](https://github.com/dlagrava/cellular-automata/actions/workflows/ci.yml)
-[![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
+![CI](https://github.com/dlagrava/cellular-automata/actions/workflows/ci.yml/badge.svg)
+![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)
 
 Java 21 library for building and evolving 2D cellular automata, plus a JavaFX demo and a headless CLI batch runner.
 
@@ -55,7 +55,7 @@ genetic.selectCrossoverType(CrossoverType.UNIFORM, 0.5); // or ONEPOINT / TWOPOI
 ./gradlew :demo:run
 ```
 
-The window lists Game of Life, Falling Sand, Langton’s Ant, HPP, Parity, Time Tunnel, West, and Genetic CA. Use Play / Pause / Step / Reset, size, and speed. Selecting HPP shows reverse, add-particle, and iteration controls.
+The window lists Game of Life, Falling Sand, Forest Fire, Langton’s Ant, HPP, Parity, Time Tunnel, West, Diffusion, Height-Field Water, and Genetic CA. Use Play / Pause / Step / Reset, size, and speed. Selecting HPP shows reverse, add-particle, and iteration controls.
 
 ## Batch / CLI
 
@@ -95,3 +95,12 @@ public class MyRule extends IntegerCellularAutomata2D {
     }
 }
 ```
+
+### Double-valued automata
+
+`core` also provides `DoubleCellularAutomata2D` for continuous cell state (same `Setup` / neighborhood / boundary path, `applyRule` returns `double`). Simple and **unphysical** examples in the demo and CLI:
+
+- **Diffusion** (heat mean over Von Neumann).
+- **Height-Field Water** (toy height + private velocity, blue colormap).
+
+The idea is to use the same wiring as integer rules: subclass in `examples`, export via `IExporter`, pick a continuous `ColorMap` (`JetColorMap`, `BlueColorMap`) and so on.
