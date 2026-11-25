@@ -37,6 +37,7 @@ public final class BatchCli {
             "time-tunnel",
             "west",
             "diffusion",
+            "height-field-water",
             "genetic-ca"
     );
 

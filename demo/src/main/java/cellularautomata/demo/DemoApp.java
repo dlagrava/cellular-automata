@@ -6,6 +6,7 @@ import cellularautomata.core.LookupTable;
 import cellularautomata.core.LookupTableFactory;
 import cellularautomata.core.NeighborhoodFactory;
 import cellularautomata.core.Setup;
+import cellularautomata.display.BlueColorMap;
 import cellularautomata.display.ColorMap;
 import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.HotColorMap;
@@ -16,6 +17,7 @@ import cellularautomata.examples.FallingSand;
 import cellularautomata.examples.ForestFire;
 import cellularautomata.examples.GameOfLife;
 import cellularautomata.examples.HPP;
+import cellularautomata.examples.HeightFieldWater;
 import cellularautomata.examples.LangtonsAnt;
 import cellularautomata.examples.Parity;
 import cellularautomata.examples.TimeTunnel;
@@ -68,6 +70,7 @@ public class DemoApp extends Application {
         TIME_TUNNEL("Time Tunnel"),
         WEST("West"),
         DIFFUSION("Diffusion"),
+        HEIGHT_FIELD_WATER("Height-Field Water"),
         GENETIC_CA("Genetic CA");
 
         private final String label;
@@ -421,6 +424,15 @@ public class DemoApp extends Application {
                 yield new Created(
                         new Diffusion(size, size, setup),
                         new CanvasExporter(size, size, new JetColorMap(0, 1)));
+            }
+            case HEIGHT_FIELD_WATER -> {
+                Setup setup = new Setup(
+                        BoundaryFactory.BoundaryType.PERIODIC,
+                        NeighborhoodFactory.NeighborhoodType.VONNEUMANN,
+                        size, size);
+                yield new Created(
+                        new HeightFieldWater(size, size, setup),
+                        new CanvasExporter(size, size, new BlueColorMap(0, 1)));
             }
             case GENETIC_CA -> {
                 Setup setup = new Setup(

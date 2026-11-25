@@ -6,6 +6,7 @@ import cellularautomata.core.LookupTable;
 import cellularautomata.core.LookupTableFactory;
 import cellularautomata.core.NeighborhoodFactory;
 import cellularautomata.core.Setup;
+import cellularautomata.display.BlueColorMap;
 import cellularautomata.display.ColorMap;
 import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.HotColorMap;
@@ -16,6 +17,7 @@ import cellularautomata.examples.FallingSand;
 import cellularautomata.examples.ForestFire;
 import cellularautomata.examples.GameOfLife;
 import cellularautomata.examples.HPP;
+import cellularautomata.examples.HeightFieldWater;
 import cellularautomata.examples.LangtonsAnt;
 import cellularautomata.examples.Parity;
 import cellularautomata.examples.TimeTunnel;
@@ -114,6 +116,13 @@ public final class ExampleFactory {
                         size, size);
                 yield new Diffusion(size, size, setup);
             }
+            case "height-field-water" -> {
+                Setup setup = new Setup(
+                        BoundaryFactory.BoundaryType.PERIODIC,
+                        NeighborhoodFactory.NeighborhoodType.VONNEUMANN,
+                        size, size);
+                yield new HeightFieldWater(size, size, setup);
+            }
             case "genetic-ca" -> {
                 Setup setup = new Setup(
                         BoundaryFactory.BoundaryType.REFLEXIVE,
@@ -147,6 +156,7 @@ public final class ExampleFactory {
             case "parity" -> new HotColorMap(0, 1);
             case "time-tunnel" -> new GrayLevelColorMap(0, 3);
             case "diffusion" -> new JetColorMap(0, 1);
+            case "height-field-water" -> new BlueColorMap(0, 1);
             case "genetic-ca" -> IDENTITY_RGB;
             default -> throw new IllegalArgumentException("Unknown CA id: " + caId);
         };
