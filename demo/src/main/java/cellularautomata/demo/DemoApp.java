@@ -12,6 +12,7 @@ import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.HotColorMap;
 import cellularautomata.display.IndexedColorMap;
 import cellularautomata.display.JetColorMap;
+import cellularautomata.examples.Cyclic;
 import cellularautomata.examples.Diffusion;
 import cellularautomata.examples.FallingSand;
 import cellularautomata.examples.ForestFire;
@@ -71,6 +72,7 @@ public class DemoApp extends Application {
         WEST("West"),
         DIFFUSION("Diffusion"),
         HEIGHT_FIELD_WATER("Height-Field Water"),
+        CYCLIC("Cyclic"),
         GENETIC_CA("Genetic CA");
 
         private final String label;
@@ -433,6 +435,16 @@ public class DemoApp extends Application {
                 yield new Created(
                         new HeightFieldWater(size, size, setup),
                         new CanvasExporter(size, size, new BlueColorMap(0, 1)));
+            }
+            case CYCLIC -> {
+                Setup setup = new Setup(
+                        BoundaryFactory.BoundaryType.PERIODIC,
+                        NeighborhoodFactory.NeighborhoodType.MOORE,
+                        size, size);
+                yield new Created(
+                        new Cyclic(size, size, setup),
+                        new CanvasExporter(size, size,
+                                new JetColorMap(0, Cyclic.DEFAULT_STATES - 1)));
             }
             case GENETIC_CA -> {
                 Setup setup = new Setup(

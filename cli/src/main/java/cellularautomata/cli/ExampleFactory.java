@@ -12,6 +12,7 @@ import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.HotColorMap;
 import cellularautomata.display.IndexedColorMap;
 import cellularautomata.display.JetColorMap;
+import cellularautomata.examples.Cyclic;
 import cellularautomata.examples.Diffusion;
 import cellularautomata.examples.FallingSand;
 import cellularautomata.examples.ForestFire;
@@ -123,6 +124,13 @@ public final class ExampleFactory {
                         size, size);
                 yield new HeightFieldWater(size, size, setup);
             }
+            case "cyclic" -> {
+                Setup setup = new Setup(
+                        BoundaryFactory.BoundaryType.PERIODIC,
+                        NeighborhoodFactory.NeighborhoodType.MOORE,
+                        size, size);
+                yield new Cyclic(size, size, setup);
+            }
             case "genetic-ca" -> {
                 Setup setup = new Setup(
                         BoundaryFactory.BoundaryType.REFLEXIVE,
@@ -157,6 +165,7 @@ public final class ExampleFactory {
             case "time-tunnel" -> new GrayLevelColorMap(0, 3);
             case "diffusion" -> new JetColorMap(0, 1);
             case "height-field-water" -> new BlueColorMap(0, 1);
+            case "cyclic" -> new JetColorMap(0, Cyclic.DEFAULT_STATES - 1);
             case "genetic-ca" -> IDENTITY_RGB;
             default -> throw new IllegalArgumentException("Unknown CA id: " + caId);
         };
