@@ -57,18 +57,11 @@ genetic.selectCrossoverType(CrossoverType.UNIFORM, 0.5); // or ONEPOINT / TWOPOI
 
 ![Demo GUI](docs/media/demo-gui.gif)
 
-The window lists Game of Life, Falling Sand, Forest Fire, Langton’s Ant, HPP, Parity, Time Tunnel, West, Diffusion, Height-Field Water, Cyclic, and Genetic CA. Use Play / Pause / Step / Reset, size, and speed. Selecting HPP shows reverse, add-particle, and iteration controls.
+Use Play / Pause / Step / Reset, size, and speed. Selecting HPP shows reverse, add-particle, and iteration controls. Genetic CA is also available in the picker.
 
-### Cyclic
+### Example rules
 
-Griffeath cyclic CA: states `0 .. n−1` (demo/CLI default **n = 20**), random start. A cell at `s` becomes `(s + 1) mod n` when at least `threshold` neighbors already hold that successor (default threshold `1`). Demo and CLI use PERIODIC + Moore. Construct with custom `states` / `threshold` if needed:
-
-```java
-new Cyclic(size, size, setup);                 // n=20, threshold=1
-new Cyclic(size, size, setup, states, threshold);
-```
-
-CLI id: `cyclic`.
+Concrete rules shipped in the `examples` module are listed in [examples/README.md](examples/README.md).
 
 ## Batch / CLI
 
@@ -111,9 +104,4 @@ public class MyRule extends IntegerCellularAutomata2D {
 
 ### Double-valued automata
 
-`core` also provides `DoubleCellularAutomata2D` for continuous cell state (same `Setup` / neighborhood / boundary path, `applyRule` returns `double`). Simple and **unphysical** examples in the demo and CLI:
-
-- **Diffusion** (heat mean over Von Neumann).
-- **Height-Field Water** (toy height + private velocity, blue colormap).
-
-The idea is to use the same wiring as integer rules: subclass in `examples`, export via `IExporter`, pick a continuous `ColorMap` (`JetColorMap`, `BlueColorMap`) and so on.
+`core` also provides `DoubleCellularAutomata2D` for continuous cell state (same `Setup` / neighborhood / boundary path, `applyRule` returns `double`). Wire them like integer rules: subclass in `examples`, export via `IExporter`, pick a continuous `ColorMap` (`JetColorMap`, `BlueColorMap`). See [examples/README.md](examples/README.md) for Diffusion and Height-Field Water.
