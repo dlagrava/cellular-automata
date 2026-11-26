@@ -18,3 +18,16 @@ application {
     // mainClass set when the JavaFX Application exists
     mainClass.set("cellularautomata.demo.DemoApp")
 }
+
+tasks.register<JavaExec>("runHodgePodge") {
+    group = "application"
+    description = "Run the HodgePodge standalone JavaFX app"
+    val runtimeCp = sourceSets["main"].runtimeClasspath
+    val javafxJars = runtimeCp.filter { it.name.startsWith("javafx-") }
+    classpath = runtimeCp.filter { !it.name.startsWith("javafx-") }
+    mainClass.set("cellularautomata.demo.HodgePodgeApp")
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+    jvmArgumentProviders.add(CommandLineArgumentProvider {
+        listOf("--module-path", javafxJars.asPath, "--add-modules", "javafx.controls")
+    })
+}

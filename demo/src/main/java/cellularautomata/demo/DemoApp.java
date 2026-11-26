@@ -19,7 +19,6 @@ import cellularautomata.examples.ForestFire;
 import cellularautomata.examples.GameOfLife;
 import cellularautomata.examples.HPP;
 import cellularautomata.examples.HeightFieldWater;
-import cellularautomata.examples.HodgePodge;
 import cellularautomata.examples.LangtonsAnt;
 import cellularautomata.examples.Parity;
 import cellularautomata.examples.TimeTunnel;
@@ -74,7 +73,6 @@ public class DemoApp extends Application {
         DIFFUSION("Diffusion"),
         HEIGHT_FIELD_WATER("Height-Field Water"),
         CYCLIC("Cyclic"),
-        HODGE_PODGE("HodgePodge"),
         GENETIC_CA("Genetic CA");
 
         private final String label;
@@ -447,16 +445,6 @@ public class DemoApp extends Application {
                         new Cyclic(size, size, setup),
                         new CanvasExporter(size, size,
                                 new JetColorMap(0, Cyclic.DEFAULT_STATES - 1)));
-            }
-            case HODGE_PODGE -> {
-                Setup setup = new Setup(
-                        BoundaryFactory.BoundaryType.PERIODIC,
-                        NeighborhoodFactory.NeighborhoodType.MOORE,
-                        size, size);
-                yield new Created(
-                        new HodgePodge(size, size, setup),
-                        new CanvasExporter(size, size,
-                                new JetColorMap(0, HodgePodge.DEFAULT_STATES)));
             }
             case GENETIC_CA -> {
                 Setup setup = new Setup(

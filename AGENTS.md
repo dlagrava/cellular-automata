@@ -18,6 +18,7 @@ Do not add JavaFX (or demo-only types) to `core`, `display`, `examples`, or `cli
 
 ```bash
 ./gradlew :demo:run          # JavaFX demo
+./gradlew :demo:runHodgePodge # HodgePodge standalone JavaFX app
 ./gradlew :cli:run --args='--ca game-of-life --steps 500 --collect density'  # headless batch
 ./gradlew :core:jar          # library jar
 ./gradlew :core:test         # core unit tests
