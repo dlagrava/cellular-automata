@@ -8,6 +8,7 @@ import cellularautomata.core.NeighborhoodFactory;
 import cellularautomata.core.Setup;
 import cellularautomata.display.BlueColorMap;
 import cellularautomata.display.ColorMap;
+import cellularautomata.display.EmojiTileImageWriter;
 import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.HotColorMap;
 import cellularautomata.display.IndexedColorMap;
@@ -19,6 +20,7 @@ import cellularautomata.examples.ForestFire;
 import cellularautomata.examples.GameOfLife;
 import cellularautomata.examples.HPP;
 import cellularautomata.examples.HeightFieldWater;
+import cellularautomata.examples.HodgePodge;
 import cellularautomata.examples.LangtonsAnt;
 import cellularautomata.examples.Parity;
 import cellularautomata.examples.TimeTunnel;
@@ -34,6 +36,9 @@ public final class ExampleFactory {
 
     private static final int LANGTON_ANTS = 5;
     private static final int GENETIC_CROSSOVER_STEP = 30;
+    /** Ill threshold so states 0..N map 1:1 onto {@link EmojiTileImageWriter#FACE_COUNT} faces. */
+    public static final int EMOTICON_N = EmojiTileImageWriter.FACE_COUNT - 1;
+    private static final int EMOTICON_G = 1;
 
     /** Maps LUT integer codes to RGB the same way DemoApp does for genetic CA. */
     private static final ColorMap IDENTITY_RGB = new ColorMap(0, 1) {
@@ -131,6 +136,14 @@ public final class ExampleFactory {
                         size, size);
                 yield new Cyclic(size, size, setup);
             }
+            case "emoticon-hodge" -> {
+                Setup setup = new Setup(
+                        BoundaryFactory.BoundaryType.PERIODIC,
+                        NeighborhoodFactory.NeighborhoodType.MOORE,
+                        size, size);
+                yield new HodgePodge(
+                        size, size, setup, EMOTICON_N, HodgePodge.DEFAULT_K1, HodgePodge.DEFAULT_K2, EMOTICON_G);
+            }
             case "genetic-ca" -> {
                 Setup setup = new Setup(
                         BoundaryFactory.BoundaryType.REFLEXIVE,
@@ -166,6 +179,8 @@ public final class ExampleFactory {
             case "diffusion" -> new JetColorMap(0, 1);
             case "height-field-water" -> new BlueColorMap(0, 1);
             case "cyclic" -> new JetColorMap(0, Cyclic.DEFAULT_STATES - 1);
+            case "emoticon-hodge" -> new IndexedColorMap(
+                    0xF7D774, 0xE8D070, 0xD4C86A, 0xB8C96A, 0x8FBF6A, 0x6BBF7A, 0x5A9B6A);
             case "genetic-ca" -> IDENTITY_RGB;
             default -> throw new IllegalArgumentException("Unknown CA id: " + caId);
         };

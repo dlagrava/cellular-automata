@@ -11,7 +11,7 @@ dependencies {
 
 javafx {
     version = "21.0.5"
-    modules("javafx.controls")
+    modules("javafx.controls", "javafx.web")
 }
 
 application {
@@ -29,5 +29,18 @@ tasks.register<JavaExec>("runHodgePodge") {
     javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
     jvmArgumentProviders.add(CommandLineArgumentProvider {
         listOf("--module-path", javafxJars.asPath, "--add-modules", "javafx.controls")
+    })
+}
+
+tasks.register<JavaExec>("runEmoticonHodge") {
+    group = "application"
+    description = "Run the Emoticon HodgePodge standalone JavaFX app"
+    val runtimeCp = sourceSets["main"].runtimeClasspath
+    val javafxJars = runtimeCp.filter { it.name.startsWith("javafx-") }
+    classpath = runtimeCp.filter { !it.name.startsWith("javafx-") }
+    mainClass.set("cellularautomata.demo.EmoticonHodgeApp")
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+    jvmArgumentProviders.add(CommandLineArgumentProvider {
+        listOf("--module-path", javafxJars.asPath, "--add-modules", "javafx.controls,javafx.web")
     })
 }
