@@ -1,6 +1,7 @@
 package cellularautomata.cli;
 
 import cellularautomata.cli.collectors.DensityCollector;
+import cellularautomata.cli.collectors.EmoticonFramesCollector;
 import cellularautomata.cli.collectors.GeneticRulesCollector;
 import cellularautomata.cli.collectors.HistogramCollector;
 import cellularautomata.cli.collectors.ImageFramesCollector;
@@ -39,6 +40,7 @@ public final class BatchCli {
             "diffusion",
             "height-field-water",
             "cyclic",
+            "emoticon-hodge",
             "genetic-ca"
     );
 
@@ -49,6 +51,7 @@ public final class BatchCli {
     );
 
     private static final int DEFAULT_SIZE = 200;
+    private static final int DEFAULT_EMOTICON_SIZE = 16;
     private static final int DEFAULT_STEPS = 100;
 
     private BatchCli() {
@@ -128,7 +131,10 @@ public final class BatchCli {
             switch (arg) {
                 case "-h", "--help" -> options.help = true;
                 case "--ca" -> options.ca = requireValue(args, ++i, "--ca");
-                case "--size" -> options.size = parsePositiveInt(requireValue(args, ++i, "--size"), "--size");
+                case "--size" -> {
+                    options.size = parsePositiveInt(requireValue(args, ++i, "--size"), "--size");
+                    options.sizeSet = true;
+                }
                 case "--steps" -> options.steps = parseNonNegativeInt(requireValue(args, ++i, "--steps"), "--steps");
                 case "--collect" -> options.collect = splitCsv(requireValue(args, ++i, "--collect"));
                 case "--out" -> options.out = requireValue(args, ++i, "--out");
@@ -149,6 +155,9 @@ public final class BatchCli {
             throw new UsageException("Unknown --ca '" + options.ca + "'. Expected one of: " + String.join(", ", KNOWN_CA));
         }
         options.ca = caId;
+        if ("emoticon-hodge".equals(caId) && !options.sizeSet) {
+            options.size = DEFAULT_EMOTICON_SIZE;
+        }
 
         if (options.collect.isEmpty() && options.framesDir == null) {
             throw new UsageException("Specify --collect and/or --frames");
@@ -189,7 +198,11 @@ public final class BatchCli {
         if (options.framesDir != null) {
             Path dir = Path.of(options.framesDir);
             Files.createDirectories(dir);
-            collectors.add(new ImageFramesCollector(dir, ExampleFactory.colorMap(options.ca)));
+            if ("emoticon-hodge".equals(options.ca)) {
+                collectors.add(new EmoticonFramesCollector(dir, ExampleFactory.EMOTICON_N));
+            } else {
+                collectors.add(new ImageFramesCollector(dir, ExampleFactory.colorMap(options.ca)));
+            }
         }
         return collectors;
     }
@@ -239,11 +252,12 @@ public final class BatchCli {
     private static void printUsage(PrintStream out) {
         out.println("Usage: BatchCli --ca <id> [--size N] [--steps N] --collect <ids> [--out path] [--frames dir] [--histogram-file path]");
         out.println("  --ca                one of: " + String.join(", ", KNOWN_CA));
-        out.println("  --size              grid size (default " + DEFAULT_SIZE + ")");
+        out.println("  --size              grid size (default " + DEFAULT_SIZE
+                + "; emoticon-hodge default " + DEFAULT_EMOTICON_SIZE + ")");
         out.println("  --steps             steps to run (default " + DEFAULT_STEPS + ")");
         out.println("  --collect           comma list: " + String.join(", ", KNOWN_COLLECTORS));
         out.println("  --out               CSV path (stdout if omitted)");
-        out.println("  --frames <dir>      also write GIF frames via ImageWriter");
+        out.println("  --frames <dir>      write GIF frames (emoji tiles for emoticon-hodge)");
         out.println("  --histogram-file    genetic-rules finish histogram path");
         out.println("  -h, --help          show this help");
     }
@@ -252,6 +266,7 @@ public final class BatchCli {
         boolean help;
         String ca;
         int size = DEFAULT_SIZE;
+        boolean sizeSet;
         int steps = DEFAULT_STEPS;
         List<String> collect = List.of();
         String out;
