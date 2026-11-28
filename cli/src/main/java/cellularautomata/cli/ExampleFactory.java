@@ -13,6 +13,7 @@ import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.HotColorMap;
 import cellularautomata.display.IndexedColorMap;
 import cellularautomata.display.JetColorMap;
+import cellularautomata.examples.BriansBrain;
 import cellularautomata.examples.Cyclic;
 import cellularautomata.examples.Diffusion;
 import cellularautomata.examples.FallingSand;
@@ -136,6 +137,13 @@ public final class ExampleFactory {
                         size, size);
                 yield new Cyclic(size, size, setup);
             }
+            case "brians-brain" -> {
+                Setup setup = new Setup(
+                        BoundaryFactory.BoundaryType.PERIODIC,
+                        NeighborhoodFactory.NeighborhoodType.MOORE,
+                        size, size);
+                yield new BriansBrain(size, size, setup);
+            }
             case "emoticon-hodge" -> {
                 Setup setup = new Setup(
                         BoundaryFactory.BoundaryType.PERIODIC,
@@ -181,6 +189,7 @@ public final class ExampleFactory {
             case "diffusion" -> new JetColorMap(0, 1);
             case "height-field-water" -> new BlueColorMap(0, 1);
             case "cyclic" -> new JetColorMap(0, Cyclic.DEFAULT_STATES - 1);
+            case "brians-brain" -> new IndexedColorMap(0x000000, 0x00FFFF, 0x3B0086);
             case "emoticon-hodge" -> new IndexedColorMap(
                     0xF7D774, 0xE8D070, 0xD4C86A, 0xB8C96A, 0x8FBF6A, 0x6BBF7A, 0x5A9B6A);
             case "genetic-ca" -> IDENTITY_RGB;

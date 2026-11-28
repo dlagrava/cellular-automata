@@ -40,6 +40,7 @@ public final class BatchCli {
             "diffusion",
             "height-field-water",
             "cyclic",
+            "brians-brain",
             "emoticon-hodge",
             "genetic-ca"
     );
