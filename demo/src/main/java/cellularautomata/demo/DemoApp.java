@@ -12,6 +12,7 @@ import cellularautomata.display.GrayLevelColorMap;
 import cellularautomata.display.HotColorMap;
 import cellularautomata.display.IndexedColorMap;
 import cellularautomata.display.JetColorMap;
+import cellularautomata.examples.BriansBrain;
 import cellularautomata.examples.Cyclic;
 import cellularautomata.examples.Diffusion;
 import cellularautomata.examples.FallingSand;
@@ -57,7 +58,7 @@ public class DemoApp extends Application {
     private static final int DEFAULT_SIZE = 200;
     private static final int MIN_SIZE = 100;
     private static final int MAX_SIZE = 512;
-    private static final int VIEW_SIZE = 500;
+    private static final int PIXEL_SCALE = 3;
     private static final int LANGTON_ANTS = 5;
     private static final int GENETIC_CROSSOVER_STEP = 30;
 
@@ -73,6 +74,7 @@ public class DemoApp extends Application {
         DIFFUSION("Diffusion"),
         HEIGHT_FIELD_WATER("Height-Field Water"),
         CYCLIC("Cyclic"),
+        BRIANS_BRAIN("Brian's Brain"),
         GENETIC_CA("Genetic CA");
 
         private final String label;
@@ -103,6 +105,10 @@ public class DemoApp extends Application {
     private static final ColorMap FOREST_FIRE_COLORS = new IndexedColorMap(
             0x2B2118, 0x2E7D32, 0xE65100);
 
+    /** off=black, on=cyan, dying=indigo */
+    private static final ColorMap BRIANS_BRAIN_COLORS = new IndexedColorMap(
+            0x000000, 0x00FFFF, 0x3B0086);
+
     private final AtomicBoolean playing = new AtomicBoolean(false);
     private final AtomicBoolean pendingReverse = new AtomicBoolean(false);
     private final AtomicInteger remainingHppSteps = new AtomicInteger(-1);
@@ -126,8 +132,6 @@ public class DemoApp extends Application {
 
         imageView = new ImageView();
         imageView.setPreserveRatio(true);
-        imageView.setFitWidth(VIEW_SIZE);
-        imageView.setFitHeight(VIEW_SIZE);
         imageView.setSmooth(false);
 
         examplePicker = new ComboBox<>();
@@ -218,9 +222,10 @@ public class DemoApp extends Application {
         resetCa(DEFAULT_SIZE);
         startLoop();
 
-        stage.setScene(new Scene(root, VIEW_SIZE + 320, VIEW_SIZE + 100));
+        stage.setScene(new Scene(root));
         stage.setOnCloseRequest(e -> shutdown());
         stage.show();
+        stage.sizeToScene();
     }
 
     @Override
@@ -341,6 +346,9 @@ public class DemoApp extends Application {
         }
         setHppPanelVisible(example == Example.HPP);
         stage.setTitle("Cellular Automata — " + example);
+        if (stage.isShowing()) {
+            stage.sizeToScene();
+        }
     }
 
     private Created createExample(Example example, int size) {
@@ -352,7 +360,7 @@ public class DemoApp extends Application {
                         size, size);
                 yield new Created(
                         new GameOfLife(size, size, setup, 0),
-                        new CanvasExporter(size, size, new GrayLevelColorMap(0, 1)));
+                        new CanvasExporter(size, size, new GrayLevelColorMap(0, 1), PIXEL_SCALE));
             }
             case FALLING_SAND -> {
                 Setup setup = new Setup(
@@ -361,7 +369,7 @@ public class DemoApp extends Application {
                         size, size);
                 yield new Created(
                         new FallingSand(size, size, setup),
-                        new CanvasExporter(size, size, FALLING_SAND_COLORS));
+                        new CanvasExporter(size, size, FALLING_SAND_COLORS, PIXEL_SCALE));
             }
             case FOREST_FIRE -> {
                 Setup setup = new Setup(
@@ -370,7 +378,7 @@ public class DemoApp extends Application {
                         size, size);
                 yield new Created(
                         new ForestFire(size, size, setup),
-                        new CanvasExporter(size, size, FOREST_FIRE_COLORS));
+                        new CanvasExporter(size, size, FOREST_FIRE_COLORS, PIXEL_SCALE));
             }
             case LANGTONS_ANT -> {
                 Setup setup = new Setup(
@@ -379,7 +387,7 @@ public class DemoApp extends Application {
                         size, size);
                 yield new Created(
                         new LangtonsAnt(size, size, setup, LANGTON_ANTS),
-                        new CanvasExporter(size, size, new HotColorMap(0, LANGTON_ANTS)));
+                        new CanvasExporter(size, size, new HotColorMap(0, LANGTON_ANTS), PIXEL_SCALE));
             }
             case HPP -> {
                 Setup setup = new Setup(
@@ -389,7 +397,8 @@ public class DemoApp extends Application {
                 yield new Created(
                         new HPP(size, size, setup),
                         new CanvasExporter(size, size,
-                                new HotColorMap(0, HPP.NORTH + HPP.SOUTH + HPP.EAST + HPP.WEST)));
+                                new HotColorMap(0, HPP.NORTH + HPP.SOUTH + HPP.EAST + HPP.WEST),
+                                PIXEL_SCALE));
             }
             case PARITY -> {
                 Setup setup = new Setup(
@@ -398,7 +407,7 @@ public class DemoApp extends Application {
                         size, size);
                 yield new Created(
                         new Parity(size, size, setup),
-                        new CanvasExporter(size, size, new HotColorMap(0, 1)));
+                        new CanvasExporter(size, size, new HotColorMap(0, 1), PIXEL_SCALE));
             }
             case TIME_TUNNEL -> {
                 Setup setup = new Setup(
@@ -407,7 +416,7 @@ public class DemoApp extends Application {
                         size, size);
                 yield new Created(
                         new TimeTunnel(size, size, setup),
-                        new CanvasExporter(size, size, new GrayLevelColorMap(0, 3)));
+                        new CanvasExporter(size, size, new GrayLevelColorMap(0, 3), PIXEL_SCALE));
             }
             case WEST -> {
                 Setup setup = new Setup(
@@ -416,7 +425,7 @@ public class DemoApp extends Application {
                         size, size);
                 yield new Created(
                         new West(size, size, setup),
-                        new CanvasExporter(size, size, new GrayLevelColorMap(0, 1)));
+                        new CanvasExporter(size, size, new GrayLevelColorMap(0, 1), PIXEL_SCALE));
             }
             case DIFFUSION -> {
                 Setup setup = new Setup(
@@ -425,7 +434,7 @@ public class DemoApp extends Application {
                         size, size);
                 yield new Created(
                         new Diffusion(size, size, setup),
-                        new CanvasExporter(size, size, new JetColorMap(0, 1)));
+                        new CanvasExporter(size, size, new JetColorMap(0, 1), PIXEL_SCALE));
             }
             case HEIGHT_FIELD_WATER -> {
                 Setup setup = new Setup(
@@ -434,7 +443,7 @@ public class DemoApp extends Application {
                         size, size);
                 yield new Created(
                         new HeightFieldWater(size, size, setup),
-                        new CanvasExporter(size, size, new BlueColorMap(0, 1)));
+                        new CanvasExporter(size, size, new BlueColorMap(0, 1), PIXEL_SCALE));
             }
             case CYCLIC -> {
                 Setup setup = new Setup(
@@ -444,7 +453,16 @@ public class DemoApp extends Application {
                 yield new Created(
                         new Cyclic(size, size, setup),
                         new CanvasExporter(size, size,
-                                new JetColorMap(0, Cyclic.DEFAULT_STATES - 1)));
+                                new JetColorMap(0, Cyclic.DEFAULT_STATES - 1), PIXEL_SCALE));
+            }
+            case BRIANS_BRAIN -> {
+                Setup setup = new Setup(
+                        BoundaryFactory.BoundaryType.PERIODIC,
+                        NeighborhoodFactory.NeighborhoodType.MOORE,
+                        size, size);
+                yield new Created(
+                        new BriansBrain(size, size, setup),
+                        new CanvasExporter(size, size, BRIANS_BRAIN_COLORS, PIXEL_SCALE));
             }
             case GENETIC_CA -> {
                 Setup setup = new Setup(
@@ -460,7 +478,7 @@ public class DemoApp extends Application {
                 genetic.initializeRules(
                         GeneticCellularAutomata.RuleDistribution.HORIZONTALSPLIT, rule1, rule2);
                 genetic.selectCrossoverType(GeneticCellularAutomata.CrossoverType.UNIFORM, 0.5);
-                yield new Created(genetic, new CanvasExporter(size, size, IDENTITY_RGB));
+                yield new Created(genetic, new CanvasExporter(size, size, IDENTITY_RGB, PIXEL_SCALE));
             }
         };
     }

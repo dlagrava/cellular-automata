@@ -40,6 +40,10 @@ Copies the east neighbor (Von Neumann); patterns drift left (−x). CLI: `west`.
 
 Griffeath cyclic CA: states `0 .. n−1` (default **n = 20**). A cell at `s` becomes `(s + 1) mod n` when at least `threshold` neighbors already hold that successor (default threshold `1`). Demo/CLI use PERIODIC + Moore. CLI: `cyclic`.
 
+### Brian's Brain
+
+Three states — off / on / dying. Off turns on with exactly two on neighbors; on → dying → off. Demo/CLI use PERIODIC + Moore. CLI: `brians-brain`.
+
 ### HodgePodge
 
 Gerhardt–Schuster hodgepodge machine: healthy (`0`), infected (`1..n−1`), ill (`n`). Infection/ill neighbor counts drive infection; infected cells average the neighborhood and grow by `g`; ill cells recover. Defaults: `n=100`, `k1=2`, `k2=3`, `g=3`. Standalone UI: `./gradlew :demo:runHodgePodge`. Emoticon showpiece (small grid, face ladder): `./gradlew :demo:runEmoticonHodge`.
