@@ -51,7 +51,7 @@ public final class BatchCli {
     );
 
     private static final int DEFAULT_SIZE = 200;
-    private static final int DEFAULT_EMOTICON_SIZE = 16;
+    private static final int DEFAULT_EMOTICON_SIZE = 30;
     private static final int DEFAULT_STEPS = 100;
 
     private BatchCli() {

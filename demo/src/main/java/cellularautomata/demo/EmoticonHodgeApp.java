@@ -29,9 +29,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class EmoticonHodgeApp extends Application {
 
-    private static final int DEFAULT_SIZE = 16;
+    private static final int DEFAULT_SIZE = 30;
     private static final int MIN_SIZE = 8;
-    private static final int MAX_SIZE = 32;
+    private static final int MAX_SIZE = 60;
     /** HodgePodge ill threshold: states 0..N map 1:1 onto {@link EmoticonExporter#FACES}. */
     private static final int N = EmoticonExporter.FACES.length - 1;
     private static final int DEFAULT_G = 1;
@@ -190,6 +190,7 @@ public class EmoticonHodgeApp extends Application {
                     NeighborhoodFactory.NeighborhoodType.MOORE,
                     size, size);
             ca = new HodgePodge(size, size, setup, N, k1, k2, g);
+            ca.paintNineSquareGroups();
             exporter = new EmoticonExporter(size, size, CELL_PX, N);
             center.getChildren().setAll(exporter.getWebView());
             ca.exportValues(exporter);

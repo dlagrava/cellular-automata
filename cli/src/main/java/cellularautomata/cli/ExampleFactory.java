@@ -141,8 +141,10 @@ public final class ExampleFactory {
                         BoundaryFactory.BoundaryType.PERIODIC,
                         NeighborhoodFactory.NeighborhoodType.MOORE,
                         size, size);
-                yield new HodgePodge(
+                HodgePodge ca = new HodgePodge(
                         size, size, setup, EMOTICON_N, HodgePodge.DEFAULT_K1, HodgePodge.DEFAULT_K2, EMOTICON_G);
+                ca.paintNineSquareGroups();
+                yield ca;
             }
             case "genetic-ca" -> {
                 Setup setup = new Setup(

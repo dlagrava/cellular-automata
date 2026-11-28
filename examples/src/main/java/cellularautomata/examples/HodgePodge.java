@@ -56,10 +56,30 @@ public class HodgePodge extends IntegerCellularAutomata2D {
         return states;
     }
 
+    /**
+     * Partition into a 3×3 of blocks: corners and edge-centers healthy ({@code 0});
+     * center block random infected ({@code 0..states-1}).
+     */
+    public void paintNineSquareGroups() {
+        int sx = getSizeX();
+        int sy = getSizeY();
+        for (int x = 0; x < sx; x++) {
+            int bx = x * 3 / sx;
+            for (int y = 0; y < sy; y++) {
+                int by = y * 3 / sy;
+                if (bx == 1 && by == 1) {
+                    setValue(x, y, (int) (Math.random() * (double) states));
+                } else {
+                    setValue(x, y, 0);
+                }
+            }
+        }
+    }
+
     @Override
     public int applyRule(int x, int y, int[] values) {
         // healthy: infected/k1 + ill/k2
-            if (values[0] == 0) {
+        if (values[0] == 0) {
             int infected = 0;
             int ill = 0;
             for (int i = 1; i < values.length; i++) {
